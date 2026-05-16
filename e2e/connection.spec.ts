@@ -9,11 +9,11 @@ test.describe('Connection states', () => {
     expect(['Connecting...', 'Connected']).toContain(text?.trim())
   })
 
-  test('should show disconnected when backend is unreachable', async ({ page, context }) => {
+  test('should show disconnected when backend is unreachable', async ({ page }) => {
+    await page.routeWebSocket('**', (ws) => ws.close())
     await page.goto('/')
-    await page.waitForSelector('[data-testid="badge"]', { timeout: 5_000 })
-    await context.setOffline(true)
-    await page.waitForTimeout(5_000)
+    await page.waitForSelector('[data-testid="badge"]', { timeout: 10_000 })
+    await page.waitForTimeout(3_000)
     const text = await page.getByTestId('badge').textContent()
     expect(['Connecting...', 'Disconnected']).toContain(text?.trim())
   })
