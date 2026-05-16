@@ -1,40 +1,18 @@
-import { CurrencyPair } from '../value-objects/currency-pair.vo'
+import type { CurrencyPairValue } from '../value-objects/currency-pair.vo'
 
-type HourlyAverageProps = {
-  readonly pair: CurrencyPair
+type HourlyAverage = {
+  readonly pair: CurrencyPairValue
   readonly average: number
-  readonly periodStart: number
-  readonly periodEnd: number
+  readonly periodStart: string
+  readonly periodEnd: string
 }
 
-class HourlyAverage {
-  private constructor(private readonly props: HourlyAverageProps) {}
+const createHourlyAverage = (
+  pair: CurrencyPairValue,
+  average: number,
+  periodStart: string,
+  periodEnd: string,
+): HourlyAverage => ({ pair, average, periodStart, periodEnd })
 
-  static create(
-    pair: CurrencyPair,
-    average: number,
-    periodStart: number,
-    periodEnd: number,
-  ): HourlyAverage {
-    return new HourlyAverage({ pair, average, periodStart, periodEnd })
-  }
-
-  getPair(): CurrencyPair {
-    return this.props.pair
-  }
-
-  getAverage(): number {
-    return this.props.average
-  }
-
-  getPeriodStart(): number {
-    return this.props.periodStart
-  }
-
-  getPeriodEnd(): number {
-    return this.props.periodEnd
-  }
-}
-
-export { HourlyAverage }
-export type { HourlyAverageProps }
+export { createHourlyAverage }
+export type { HourlyAverage }

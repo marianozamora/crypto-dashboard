@@ -1,8 +1,8 @@
-import type { CurrencyPair as CurrencyPairType } from '@crypto/shared'
-
 const VALID_PAIRS = ['ETH/USDC', 'ETH/USDT', 'ETH/BTC'] as const
 
-const FINNHUB_TO_PAIR: Readonly<Record<string, CurrencyPairType>> = {
+type CurrencyPairValue = (typeof VALID_PAIRS)[number]
+
+const FINNHUB_SYMBOL_MAP: Readonly<Record<string, CurrencyPairValue>> = {
   'BINANCE:ETHUSDC': 'ETH/USDC',
   'BINANCE:ETHUSDT': 'ETH/USDT',
   'BINANCE:ETHBTC': 'ETH/BTC',
@@ -10,32 +10,23 @@ const FINNHUB_TO_PAIR: Readonly<Record<string, CurrencyPairType>> = {
 
 class InvalidCurrencyPairError extends Error {
   constructor(value: string) {
-    super(`Invalid currency pair: "${value}". Valid pairs: ${VALID_PAIRS.join(', ')}`)
+    super(`Invalid currency pair: ${value}. Valid: ${VALID_PAIRS.join(', ')}`)
     this.name = 'InvalidCurrencyPairError'
   }
 }
 
-function isValidPair(value: string): value is CurrencyPairType {
-  return (VALID_PAIRS as readonly string[]).includes(value)
+const createCurrencyPair = (value: string): CurrencyPairValue => {
+  if (!(VALID_PAIRS as readonly string[]).includes(value)) {
+    throw new InvalidCurrencyPairError(value)
+  }
+  return value as CurrencyPairValue
 }
 
-class CurrencyPair {
-  private constructor(private readonly value: CurrencyPairType) {}
-
-  static create(value: string): CurrencyPair {
-    if (!isValidPair(value)) throw new InvalidCurrencyPairError(value)
-    return new CurrencyPair(value)
-  }
-
-  static fromFinnhubSymbol(symbol: string): CurrencyPair {
-    const pair = FINNHUB_TO_PAIR[symbol]
-    if (pair === undefined) throw new InvalidCurrencyPairError(symbol)
-    return new CurrencyPair(pair)
-  }
-
-  getValue(): CurrencyPairType {
-    return this.value
-  }
+const currencyPairFromFinnhub = (symbol: string): CurrencyPairValue => {
+  const pair = FINNHUB_SYMBOL_MAP[symbol]
+  if (!pair) throw new InvalidCurrencyPairError(symbol)
+  return pair
 }
 
-export { CurrencyPair, InvalidCurrencyPairError }
+export { VALID_PAIRS, createCurrencyPair, currencyPairFromFinnhub, InvalidCurrencyPairError }
+export type { CurrencyPairValue }

@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
-import type { CurrencyPair } from '@crypto/shared'
+import type { CurrencyPairValue } from '../../rates/domain/value-objects/currency-pair.vo'
 
 @Injectable()
 export class AppLoggerService {
   private readonly logger = new Logger(AppLoggerService.name)
 
-  logRateTick(pair: CurrencyPair, price: number): void {
+  logRateTick(pair: CurrencyPairValue, price: number): void {
     this.logger.log(
       JSON.stringify({ event: 'rate_tick', pair, price, timestamp: new Date().toISOString() }),
     )
@@ -38,7 +38,7 @@ export class AppLoggerService {
     )
   }
 
-  logHourlyAverageCalculated(pair: CurrencyPair, average: number): void {
+  logHourlyAverageCalculated(pair: CurrencyPairValue, average: number): void {
     this.logger.log(
       JSON.stringify({
         event: 'hourly_average_calculated',

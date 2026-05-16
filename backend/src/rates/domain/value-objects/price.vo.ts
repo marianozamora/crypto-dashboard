@@ -1,21 +1,19 @@
+type Price = {
+  readonly value: number
+  readonly _brand: 'Price'
+}
+
 class InvalidPriceError extends Error {
   constructor(value: number) {
-    super(`Invalid price: ${value}. Must be a finite number greater than 0`)
+    super(`Price must be positive and finite, got ${value}`)
     this.name = 'InvalidPriceError'
   }
 }
 
-class Price {
-  private constructor(private readonly value: number) {}
-
-  static create(value: number): Price {
-    if (value <= 0 || !Number.isFinite(value)) throw new InvalidPriceError(value)
-    return new Price(value)
-  }
-
-  getValue(): number {
-    return this.value
-  }
+const createPrice = (value: number): Price => {
+  if (value <= 0 || !Number.isFinite(value)) throw new InvalidPriceError(value)
+  return { value, _brand: 'Price' }
 }
 
-export { Price, InvalidPriceError }
+export { createPrice, InvalidPriceError }
+export type { Price }

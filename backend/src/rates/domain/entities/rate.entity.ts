@@ -1,31 +1,17 @@
-import { CurrencyPair } from '../value-objects/currency-pair.vo'
-import { Price } from '../value-objects/price.vo'
+import type { CurrencyPairValue } from '../value-objects/currency-pair.vo'
+import type { Price } from '../value-objects/price.vo'
 
-type RateProps = {
-  readonly pair: CurrencyPair
+type Rate = {
+  readonly pair: CurrencyPairValue
   readonly price: Price
   readonly timestamp: number
 }
 
-class Rate {
-  private constructor(private readonly props: RateProps) {}
+const createRate = (pair: CurrencyPairValue, price: Price, timestamp: number): Rate => ({
+  pair,
+  price,
+  timestamp,
+})
 
-  static create(pair: CurrencyPair, price: number, timestamp: number): Rate {
-    return new Rate({ pair, price: Price.create(price), timestamp })
-  }
-
-  getPair(): CurrencyPair {
-    return this.props.pair
-  }
-
-  getPrice(): number {
-    return this.props.price.getValue()
-  }
-
-  getTimestamp(): number {
-    return this.props.timestamp
-  }
-}
-
-export { Rate }
-export type { RateProps }
+export { createRate }
+export type { Rate }
