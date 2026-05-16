@@ -25,7 +25,7 @@ export default defineConfig({
   webServer: {
     command: 'cd ../frontend && npm run dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env['CI'],
+    reuseExistingServer: true,
     timeout: 30_000,
   },
 })
