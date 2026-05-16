@@ -12,7 +12,7 @@ type PairCardProps = {
 
 const buildHourlyAverageLabel = (pair: CurrencyPair, hourlyAverage: number | null): string | null => {
   if (hourlyAverage === null) return null
-  const symbol = PAIR_CURRENCY_SYMBOLS[pair]
+  const symbol = PAIR_CURRENCY_SYMBOLS[pair] ?? '$'
   return `${symbol}${formatPrice(hourlyAverage)}`
 }
 
@@ -32,10 +32,10 @@ const PairCard = ({ pair }: PairCardProps): JSX.Element => {
   const price = rate?.price ?? null
   const timestamp = rate !== null ? new Date(rate.timestamp).getTime() : null
   const hourlyAverage = rate?.hourlyAverage ?? null
-  const symbol = PAIR_CURRENCY_SYMBOLS[pair]
+  const symbol = PAIR_CURRENCY_SYMBOLS[pair] ?? '$'
 
   return (
-    <DataCard title={PAIR_LABELS[pair]}>
+    <DataCard title={PAIR_LABELS[pair] ?? pair}>
       <div data-testid={`pair-card-${pair.replace('/', '-')}`}>
         <PriceDisplay price={price} timestamp={timestamp} symbol={symbol} size="lg" />
         <div className="mt-4 flex flex-col gap-1 border-t border-white/5 pt-3">

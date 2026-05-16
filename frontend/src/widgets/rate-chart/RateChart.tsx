@@ -62,7 +62,7 @@ const RateChart = ({ pair }: RateChartProps): JSX.Element => {
   const [data, setData] = useState<readonly ChartDataPoint[]>([])
   const { getRateForPair } = useRates()
   const rate = getRateForPair(pair)
-  const symbol = PAIR_CURRENCY_SYMBOLS[pair]
+  const symbol = PAIR_CURRENCY_SYMBOLS[pair] ?? '$'
 
   useEffect((): void => {
     if (rate === null) return
@@ -71,7 +71,7 @@ const RateChart = ({ pair }: RateChartProps): JSX.Element => {
 
   if (data.length === 0) {
     return (
-      <DataCard title={`${PAIR_LABELS[pair]} Chart`}>
+      <DataCard title={`${PAIR_LABELS[pair] ?? pair} Chart`}>
         <div
           className="flex items-center justify-center h-40"
           data-testid={`chart-loading-${pair.replace('/', '-')}`}
@@ -83,7 +83,7 @@ const RateChart = ({ pair }: RateChartProps): JSX.Element => {
   }
 
   return (
-    <DataCard title={`${PAIR_LABELS[pair]} Chart`}>
+    <DataCard title={`${PAIR_LABELS[pair] ?? pair} Chart`}>
       <div className="h-40" data-testid={`rate-chart-${pair.replace('/', '-')}`}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={[...data]}>
