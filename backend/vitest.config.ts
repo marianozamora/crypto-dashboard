@@ -7,6 +7,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     setupFiles: ['reflect-metadata'],
+    exclude: ['dist/**', 'node_modules/**'],
     coverage: {
       provider: 'v8',
       thresholds: { lines: 80, functions: 80, branches: 80 },

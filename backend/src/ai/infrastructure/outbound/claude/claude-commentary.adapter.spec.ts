@@ -9,7 +9,7 @@ type MockMessages = { create: ReturnType<typeof vi.fn> }
 let mockMessages: MockMessages
 
 vi.mock('@anthropic-ai/sdk', () => ({
-  default: vi.fn().mockImplementation(() => ({ messages: mockMessages })),
+  default: vi.fn().mockImplementation(function () { return { messages: mockMessages } }),
 }))
 
 const MOCK_INPUT: CommentaryInput = {

@@ -22,7 +22,7 @@ type MockWebSocket = {
 let mockWsInstance: MockWebSocket
 
 vi.mock('ws', () => {
-  const Ctor = vi.fn().mockImplementation(() => mockWsInstance)
+  const Ctor = vi.fn().mockImplementation(function () { return mockWsInstance })
   Object.assign(Ctor, { OPEN: 1 })
   return { default: Ctor }
 })
