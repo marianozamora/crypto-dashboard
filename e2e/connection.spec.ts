@@ -9,12 +9,12 @@ test.describe('Connection states', () => {
     expect(['Connecting...', 'Connected']).toContain(text?.trim())
   })
 
-  test('should show disconnected when backend is unreachable', async ({ page }) => {
-    await page.route('**/socket.io/**', (route) => route.abort())
-    await page.goto('/')
+  test('should show disconnected when backend is unreachable', async ({ page, context }) => {
+    await context.setOffline(true)
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
     const badge = page.getByTestId('badge')
     await expect(badge).toBeVisible({ timeout: 10_000 })
-    await page.waitForTimeout(5_000)
+    await page.waitForTimeout(3_000)
     const text = await badge.textContent()
     expect(['Connecting...', 'Disconnected']).toContain(text?.trim())
   })

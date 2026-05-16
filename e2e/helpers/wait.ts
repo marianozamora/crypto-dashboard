@@ -5,12 +5,12 @@ const waitForConnection = async (page: Page): Promise<void> => {
 }
 
 const waitForRates = async (page: Page): Promise<void> => {
-  await page.waitForSelector('[data-testid="price-tag"]', { timeout: 15_000 })
+  await page.waitForSelector('[data-testid="price-tag"]', { timeout: 45_000 })
 }
 
 const getPriceText = async (page: Page, pair: string): Promise<string | null> => {
   const selector = `[data-testid="pair-card-${pair}"] [data-testid="price-tag"]`
-  return page.locator(selector).textContent()
+  return page.locator(selector).textContent({ timeout: 45_000 })
 }
 
 export { waitForConnection, waitForRates, getPriceText }

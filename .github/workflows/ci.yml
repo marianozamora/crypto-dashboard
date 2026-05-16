@@ -115,10 +115,13 @@ jobs:
         env:
           FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      - name: Wait for backend health
+      - name: Wait for backend and Finnhub connection
         run: |
-          for i in {1..30}; do
-            curl -sf http://localhost:3001/health && break
+          for i in {1..60}; do
+            RESPONSE=$(curl -sf http://localhost:3001/health 2>/dev/null || true)
+            CONNECTED=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('finnhubConnected','false'))" 2>/dev/null || echo "false")
+            [ "$CONNECTED" = "True" ] && echo "Finnhub connected" && break
+            echo "Waiting... ($i/60)"
             sleep 2
           done
       - run: npm test
