@@ -3,7 +3,7 @@ import type { ConnectionState } from '@crypto/shared'
 import { ConnectionStatus } from './ConnectionStatus'
 import { WebSocketContext } from '@app/providers/WebSocketProvider'
 
-const withMockContext = (state: ConnectionState) => ({
+const withMockContext = (state: ConnectionState): { decorators: ((Story: StoryFn) => JSX.Element)[] } => ({
   decorators: [
     (Story: StoryFn): JSX.Element => (
       <WebSocketContext.Provider value={{ connectionState: state }}>

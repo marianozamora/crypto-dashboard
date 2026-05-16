@@ -4,7 +4,7 @@ import type { MarketCommentary } from '@crypto/shared'
 import { CommentaryWidget } from './CommentaryWidget'
 import { useCommentaryStore } from '@features/commentary/store/commentary.store'
 
-const withCommentary = (commentary: MarketCommentary | null) => ({
+const withCommentary = (commentary: MarketCommentary | null): { decorators: ((Story: StoryFn) => JSX.Element)[] } => ({
   decorators: [
     (Story: StoryFn): JSX.Element => {
       useEffect((): (() => void) => {

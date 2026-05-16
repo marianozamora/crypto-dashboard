@@ -10,6 +10,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
+      include: ['src/**'],
       thresholds: {
         lines: 80,
         functions: 80,
@@ -19,6 +20,9 @@ export default defineConfig({
         'src/**/*.stories.tsx',
         'src/test-setup.ts',
         'src/app/styles/**',
+        'src/**/index.ts',
+        'src/main.tsx',
+        'src/app/App.tsx',
       ],
     },
   },

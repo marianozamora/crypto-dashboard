@@ -1,0 +1,31 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "."
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    "no-console": "error",
+    "no-restricted-imports": ["error", {
+      "patterns": [{
+        "group": ["../../**", "../../../**", "../../../../**"],
+        "message": "Use path aliases (@app, @pages, @widgets, @features, @shared, etc.) instead of deep relative imports."
+      }]
+    }]
+  },
+  "ignorePatterns": ["vite.config.ts", "vitest.config.ts", "tailwind.config.ts", "postcss.config.js"]
+}

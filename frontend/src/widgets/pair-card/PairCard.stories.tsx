@@ -4,7 +4,7 @@ import type { RateUpdate } from '@crypto/shared'
 import { PairCard } from './PairCard'
 import { useRatesStore } from '@features/rates/store/rates.store'
 
-const withRate = (rate: RateUpdate | null) => ({
+const withRate = (rate: RateUpdate | null): { decorators: ((Story: StoryFn) => JSX.Element)[] } => ({
   decorators: [
     (Story: StoryFn): JSX.Element => {
       useEffect((): (() => void) => {

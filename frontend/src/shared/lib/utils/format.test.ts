@@ -1,4 +1,4 @@
-import { formatPrice, formatTimestamp, formatPercent } from './format'
+import { formatPrice, formatTimestamp, formatPercent, formatChartTime } from './format'
 
 describe('formatPrice', () => {
   it('should format positive number with 2 decimals', () => {
@@ -45,5 +45,16 @@ describe('formatPercent', () => {
 
   it('should show 2 decimal places', () => {
     expect(formatPercent(0)).toBe('+0.00%')
+  })
+})
+
+describe('formatChartTime', () => {
+  it('should format timestamp as HH:mm:ss', () => {
+    const ts = new Date('2025-01-15T10:30:45.000Z').getTime()
+    expect(formatChartTime(ts)).toMatch(/\d{2}:\d{2}:\d{2}/)
+  })
+
+  it('should return a string', () => {
+    expect(typeof formatChartTime(Date.now())).toBe('string')
   })
 })

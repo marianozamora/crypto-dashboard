@@ -13,7 +13,7 @@ const generateTicks = (count: number, pair: CurrencyPair, basePrice: number): re
     hourlyAverage: basePrice,
   }))
 
-const withTicks = (ticks: readonly RateUpdate[]) => ({
+const withTicks = (ticks: readonly RateUpdate[]): { decorators: ((Story: StoryFn) => JSX.Element)[] } => ({
   decorators: [
     (Story: StoryFn): JSX.Element => {
       useEffect((): (() => void) => {
