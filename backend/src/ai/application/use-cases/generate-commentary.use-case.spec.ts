@@ -1,9 +1,9 @@
 import { GenerateCommentaryUseCase } from './generate-commentary.use-case'
-import type { AiCommentaryPort, CommentaryInput } from '../../domain/ports/outbound/ai-commentary.port'
-import type { AppLoggerService } from '../../../shared/logger/app-logger.service'
-import type { ProcessRateTickUseCase } from '../../../rates/application/use-cases/process-rate-tick.use-case'
+import type { AiCommentaryPort, CommentaryInput } from '@ai/domain/ports/outbound/ai-commentary.port'
+import type { AppLoggerService } from '@logger/app-logger.service'
+import type { ProcessRateTickUseCase } from '@application/use-cases/process-rate-tick.use-case'
 import type { MarketCommentary } from '@crypto/shared'
-import type { RateTickForAggregation } from '../../../rates/domain/services/rate-aggregator.service'
+import type { RateTickForAggregation } from '@domain/services/rate-aggregator.service'
 
 type MockAiCommentary = { [K in keyof AiCommentaryPort]: ReturnType<typeof vi.fn> }
 type MockLogger = { [K in keyof AppLoggerService]: ReturnType<typeof vi.fn> }

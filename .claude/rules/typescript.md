@@ -107,6 +107,49 @@ if (!isWebSocketEvent(raw)) throw new Error('Unexpected message shape')
 const event = raw // inferred as WebSocketEvent
 ```
 
+## Path aliases
+
+Never use deep relative imports (`../../`, `../../../`, etc.). Use path aliases instead.
+
+**Wrong:**
+```typescript
+import { createPrice } from '../../domain/value-objects/price.vo'
+import { AppLoggerService } from '../../../shared/logger/app-logger.service'
+```
+
+**Right:**
+```typescript
+import { createPrice } from '@domain/value-objects/price.vo'
+import { AppLoggerService } from '@logger/app-logger.service'
+```
+
+### Backend aliases (`backend/tsconfig.json`)
+
+| Alias | Resolves to |
+|-------|------------|
+| `@domain/*` | `src/rates/domain/*` |
+| `@application/*` | `src/rates/application/*` |
+| `@infrastructure/*` | `src/rates/infrastructure/*` |
+| `@ai/*` | `src/ai/*` |
+| `@shared/*` | `src/shared/*` |
+| `@config/*` | `src/shared/config/*` |
+| `@logger/*` | `src/shared/logger/*` |
+
+### Frontend aliases (`frontend/tsconfig.json`)
+
+| Alias | Resolves to |
+|-------|------------|
+| `@app/*` | `src/app/*` |
+| `@pages/*` | `src/pages/*` |
+| `@widgets/*` | `src/widgets/*` |
+| `@features/*` | `src/features/*` |
+| `@entities/*` | `src/entities/*` |
+| `@shared/*` | `src/shared/*` |
+
+Same-directory (`./`) and one-level-up (`../`) relative imports are allowed when both files are in the same module boundary. Cross-module imports always use aliases.
+
+Runtime resolution: `tsconfig-paths/register` (Node.js); `vite-tsconfig-paths` plugin (Vite / Vitest).
+
 ## Never use `as` casting
 
 `as` casting tells TypeScript "trust me" — it bypasses type checking entirely and hides bugs.

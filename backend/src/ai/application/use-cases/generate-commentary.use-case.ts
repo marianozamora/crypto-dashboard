@@ -1,12 +1,12 @@
 import { Injectable, Inject, Logger } from '@nestjs/common'
 import type { MarketCommentary } from '@crypto/shared'
-import { VALID_PAIRS } from '../../../rates/domain/value-objects/currency-pair.vo'
-import type { CurrencyPairValue } from '../../../rates/domain/value-objects/currency-pair.vo'
-import { calculateHourlyAverage, calculateChangePercent } from '../../../rates/domain/services/rate-aggregator.service'
-import { AI_COMMENTARY_PORT } from '../../domain/ports/outbound/ai-commentary.port'
-import type { AiCommentaryPort, CommentaryInput, CommentaryInputPair } from '../../domain/ports/outbound/ai-commentary.port'
-import { AppLoggerService } from '../../../shared/logger/app-logger.service'
-import { ProcessRateTickUseCase } from '../../../rates/application/use-cases/process-rate-tick.use-case'
+import { VALID_PAIRS } from '@domain/value-objects/currency-pair.vo'
+import type { CurrencyPairValue } from '@domain/value-objects/currency-pair.vo'
+import { calculateHourlyAverage, calculateChangePercent } from '@domain/services/rate-aggregator.service'
+import { AI_COMMENTARY_PORT } from '@ai/domain/ports/outbound/ai-commentary.port'
+import type { AiCommentaryPort, CommentaryInput, CommentaryInputPair } from '@ai/domain/ports/outbound/ai-commentary.port'
+import { AppLoggerService } from '@logger/app-logger.service'
+import { ProcessRateTickUseCase } from '@application/use-cases/process-rate-tick.use-case'
 
 @Injectable()
 export class GenerateCommentaryUseCase {

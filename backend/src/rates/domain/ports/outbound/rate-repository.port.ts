@@ -1,6 +1,6 @@
-import type { Rate } from '../../entities/rate.entity'
-import type { HourlyAverage } from '../../entities/hourly-average.entity'
-import type { CurrencyPairValue } from '../../value-objects/currency-pair.vo'
+import type { Rate } from '@domain/entities/rate.entity'
+import type { HourlyAverage } from '@domain/entities/hourly-average.entity'
+import type { CurrencyPairValue } from '@domain/value-objects/currency-pair.vo'
 
 type RateRepositoryPort = {
   save(rate: Rate): Promise<void>

@@ -1,9 +1,9 @@
 import { ProcessRateTickUseCase } from './process-rate-tick.use-case'
-import type { RateRepositoryPort } from '../../domain/ports/outbound/rate-repository.port'
-import type { RateStreamPort } from '../../domain/ports/outbound/rate-stream.port'
-import type { AppLoggerService } from '../../../shared/logger/app-logger.service'
-import { InvalidPriceError } from '../../domain/value-objects/price.vo'
-import { InvalidCurrencyPairError } from '../../domain/value-objects/currency-pair.vo'
+import type { RateRepositoryPort } from '@domain/ports/outbound/rate-repository.port'
+import type { RateStreamPort } from '@domain/ports/outbound/rate-stream.port'
+import type { AppLoggerService } from '@logger/app-logger.service'
+import { InvalidPriceError } from '@domain/value-objects/price.vo'
+import { InvalidCurrencyPairError } from '@domain/value-objects/currency-pair.vo'
 import type { RateUpdate } from '@crypto/shared'
 
 type MockRepository = { [K in keyof RateRepositoryPort]: ReturnType<typeof vi.fn> }

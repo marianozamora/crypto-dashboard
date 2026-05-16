@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import type { CurrencyPairValue } from '../../rates/domain/value-objects/currency-pair.vo'
+import type { CurrencyPairValue } from '@domain/value-objects/currency-pair.vo'
 
 @Injectable()
 export class AppLoggerService {

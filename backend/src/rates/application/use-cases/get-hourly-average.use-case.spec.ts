@@ -1,6 +1,6 @@
 import { GetHourlyAverageUseCase } from './get-hourly-average.use-case'
-import type { RateRepositoryPort } from '../../domain/ports/outbound/rate-repository.port'
-import { InvalidCurrencyPairError } from '../../domain/value-objects/currency-pair.vo'
+import type { RateRepositoryPort } from '@domain/ports/outbound/rate-repository.port'
+import { InvalidCurrencyPairError } from '@domain/value-objects/currency-pair.vo'
 
 type MockRepository = { [K in keyof RateRepositoryPort]: ReturnType<typeof vi.fn> }
 

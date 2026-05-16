@@ -1,9 +1,9 @@
 import { PersistHourlyAverageUseCase } from './persist-hourly-average.use-case'
-import type { RateRepositoryPort } from '../../domain/ports/outbound/rate-repository.port'
-import type { AppLoggerService } from '../../../shared/logger/app-logger.service'
+import type { RateRepositoryPort } from '@domain/ports/outbound/rate-repository.port'
+import type { AppLoggerService } from '@logger/app-logger.service'
 import type { ProcessRateTickUseCase } from './process-rate-tick.use-case'
-import { createPrice } from '../../domain/value-objects/price.vo'
-import type { RateTickForAggregation } from '../../domain/services/rate-aggregator.service'
+import { createPrice } from '@domain/value-objects/price.vo'
+import type { RateTickForAggregation } from '@domain/services/rate-aggregator.service'
 
 type MockRepository = { [K in keyof RateRepositoryPort]: ReturnType<typeof vi.fn> }
 type MockLogger = { [K in keyof AppLoggerService]: ReturnType<typeof vi.fn> }

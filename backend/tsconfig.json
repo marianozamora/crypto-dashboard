@@ -10,6 +10,15 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@domain/*": ["src/rates/domain/*"],
+      "@application/*": ["src/rates/application/*"],
+      "@infrastructure/*": ["src/rates/infrastructure/*"],
+      "@ai/*": ["src/ai/*"],
+      "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/shared/config/*"],
+      "@logger/*": ["src/shared/logger/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strict": true,

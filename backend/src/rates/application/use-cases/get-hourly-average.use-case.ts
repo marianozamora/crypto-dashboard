@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common'
-import { createCurrencyPair } from '../../domain/value-objects/currency-pair.vo'
-import { RATE_REPOSITORY_PORT } from '../../domain/ports/outbound/rate-repository.port'
-import type { RateRepositoryPort } from '../../domain/ports/outbound/rate-repository.port'
-import type { GetHourlyAveragePort } from '../../domain/ports/inbound/rate-use-cases.port'
+import { createCurrencyPair } from '@domain/value-objects/currency-pair.vo'
+import { RATE_REPOSITORY_PORT } from '@domain/ports/outbound/rate-repository.port'
+import type { RateRepositoryPort } from '@domain/ports/outbound/rate-repository.port'
+import type { GetHourlyAveragePort } from '@domain/ports/inbound/rate-use-cases.port'
 
 @Injectable()
 export class GetHourlyAverageUseCase implements GetHourlyAveragePort {

@@ -1,5 +1,5 @@
 import type { MarketCommentary } from '@crypto/shared'
-import type { CurrencyPairValue } from '../../../../rates/domain/value-objects/currency-pair.vo'
+import type { CurrencyPairValue } from '@domain/value-objects/currency-pair.vo'
 
 type CommentaryInputPair = {
   readonly name: CurrencyPairValue
