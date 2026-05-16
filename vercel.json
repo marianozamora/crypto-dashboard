@@ -1,7 +1,6 @@
 {
-  "framework": "vite",
-  "buildCommand": "cd shared && npm ci && npm run build && cd ../frontend && npm run build",
-  "outputDirectory": "frontend/dist",
-  "installCommand": "cd frontend && npm install",
-  "devCommand": "cd frontend && npm run dev"
+  "framework": null,
+  "buildCommand": "node scripts/vercel-build.js",
+  "outputDirectory": "output",
+  "installCommand": "cd frontend && npm install"
 }
