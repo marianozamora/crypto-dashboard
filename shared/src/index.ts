@@ -1,0 +1,5 @@
+export type { CurrencyPair, ConnectionState, RateUpdate, HourlyAverage, RateTick } from './types/rate.types'
+export type { ConnectionStatus } from './types/connection.types'
+export type { MarketCommentary } from './types/commentary.types'
+export { SOCKET_EVENTS } from './events/socket-events'
+export type { SocketEvent } from './events/socket-events'
