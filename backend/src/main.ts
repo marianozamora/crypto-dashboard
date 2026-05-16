@@ -3,6 +3,7 @@ import 'reflect-metadata'
 import { NestFactory } from '@nestjs/core'
 import { ValidationPipe, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
 import type { Env } from './shared/config/env.validation'
 
@@ -20,6 +21,19 @@ async function bootstrap(): Promise<void> {
   )
 
   app.enableShutdownHooks()
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Cryptostream API')
+    .setDescription(
+      'Real-time cryptocurrency exchange rates for ETH/USDC, ETH/USDT and ETH/BTC',
+    )
+    .setVersion('1.0')
+    .addTag('health', 'API health and connectivity status')
+    .addTag('rates', 'Real-time exchange rate data')
+    .build()
+
+  const document = SwaggerModule.createDocument(app, swaggerConfig)
+  SwaggerModule.setup('api/docs', app, document)
 
   app.enableCors({
     origin: configService.get('FRONTEND_URL', { infer: true }),

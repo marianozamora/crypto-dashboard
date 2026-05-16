@@ -21,6 +21,7 @@
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/platform-socket.io": "^11.0.0",
     "@nestjs/schedule": "^6.0.0",
+    "@nestjs/swagger": "^11.4.3",
     "@nestjs/throttler": "^6.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "@nestjs/websockets": "^11.0.0",
@@ -30,6 +31,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.1",
+    "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.20",
     "ws": "^8.18.0",
     "zod": "^3.24.1"

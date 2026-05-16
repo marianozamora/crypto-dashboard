@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { FinnhubWsAdapter } from '../finnhub/finnhub-ws.adapter'
 import { RatesGateway } from '../websocket/rates.gateway'
 
@@ -10,6 +11,7 @@ type HealthStatus = {
   readonly timestamp: string
 }
 
+@ApiTags('health')
 @Controller('health')
 export class HealthController {
   constructor(
@@ -17,6 +19,20 @@ export class HealthController {
     private readonly ratesGateway: RatesGateway,
   ) {}
 
+  @ApiOperation({ summary: 'Check API health and connectivity status' })
+  @ApiResponse({
+    status: 200,
+    description: 'API is healthy',
+    schema: {
+      example: {
+        status: 'ok',
+        finnhubConnected: true,
+        connectedClients: 2,
+        uptime: 3600,
+        timestamp: '2025-01-15T10:00:00.000Z',
+      },
+    },
+  })
   @Get()
   check(): HealthStatus {
     return {
