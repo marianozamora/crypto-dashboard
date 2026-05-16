@@ -10,6 +10,14 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       thresholds: { lines: 80, functions: 80, branches: 80 },
+      exclude: [
+        '**/*.module.ts',
+        '**/main.ts',
+        '**/*.orm-entity.ts',
+        '**/*.port.ts',
+        '**/claude.config.ts',
+        '**/vitest.config.ts',
+      ],
     },
   },
 })
