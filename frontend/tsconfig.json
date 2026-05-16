@@ -13,6 +13,7 @@
     "types": ["vitest/globals", "@testing-library/jest-dom", "vite/client"],
     "baseUrl": ".",
     "paths": {
+      "@crypto/shared": ["../shared/src/index"],
       "@app/*":       ["src/app/*"],
       "@pages/*":     ["src/pages/*"],
       "@widgets/*":   ["src/widgets/*"],
