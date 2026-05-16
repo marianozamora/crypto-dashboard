@@ -1,28 +1,35 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "exactOptionalPropertyTypes": true,
-    "skipLibCheck": true,
-    "baseUrl": "./",
+    "types": ["vitest/globals", "@testing-library/jest-dom", "vite/client"],
+    "baseUrl": ".",
     "paths": {
-      "@app/*": ["src/app/*"],
-      "@pages/*": ["src/pages/*"],
-      "@widgets/*": ["src/widgets/*"],
-      "@features/*": ["src/features/*"],
-      "@entities/*": ["src/entities/*"],
-      "@shared/*": ["src/shared/*"]
-    }
+      "@app/*":       ["src/app/*"],
+      "@pages/*":     ["src/pages/*"],
+      "@widgets/*":   ["src/widgets/*"],
+      "@features/*":  ["src/features/*"],
+      "@entities/*":  ["src/entities/*"],
+      "@shared/*":    ["src/shared/*"],
+      "@atoms/*":     ["src/shared/ui/atoms/*"],
+      "@molecules/*": ["src/shared/ui/molecules/*"],
+      "@organisms/*": ["src/shared/ui/organisms/*"],
+      "@lib/*":       ["src/shared/lib/*"],
+      "@config/*":    ["src/shared/config/*"]
+    },
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
-  "include": ["src/**/*"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
