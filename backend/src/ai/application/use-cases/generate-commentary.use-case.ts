@@ -1,48 +1,51 @@
-import { Injectable, Inject, Logger } from '@nestjs/common'
 import type { MarketCommentary } from '@crypto/shared'
 import { VALID_PAIRS } from '@domain/value-objects/currency-pair.vo'
 import type { CurrencyPairValue } from '@domain/value-objects/currency-pair.vo'
 import { calculateHourlyAverage, calculateChangePercent } from '@domain/services/rate-aggregator.service'
+import type { RateTickForAggregation } from '@domain/services/rate-aggregator.service'
 import { AI_COMMENTARY_PORT } from '@ai/domain/ports/outbound/ai-commentary.port'
 import type { AiCommentaryPort, CommentaryInput, CommentaryInputPair } from '@ai/domain/ports/outbound/ai-commentary.port'
 import { AppLoggerService } from '@logger/app-logger.service'
-import { ProcessRateTickUseCase } from '@application/use-cases/process-rate-tick.use-case'
+import type { ProcessRateTickUseCase } from '@application/use-cases/process-rate-tick.use-case'
 
-@Injectable()
-export class GenerateCommentaryUseCase {
-  private readonly logger = new Logger(GenerateCommentaryUseCase.name)
+const GENERATE_COMMENTARY_USE_CASE = Symbol('GenerateCommentaryUseCase')
 
-  constructor(
-    @Inject(AI_COMMENTARY_PORT) private readonly aiCommentary: AiCommentaryPort,
-    private readonly processRateTickUseCase: ProcessRateTickUseCase,
-    private readonly appLogger: AppLoggerService,
-  ) {}
+type GenerateCommentaryUseCase = {
+  execute(): Promise<MarketCommentary>
+}
 
-  async execute(): Promise<MarketCommentary> {
-    const input = this.buildCommentaryInput()
+const buildCommentaryInputPair = (
+  pair: CurrencyPairValue,
+  ticks: readonly RateTickForAggregation[],
+): CommentaryInputPair => {
+  const currentPrice = ticks.at(-1)?.price.value ?? null
+  const hourlyAverage = calculateHourlyAverage(ticks)
+  const changePercent = calculateChangePercent(currentPrice ?? 0, hourlyAverage)
+  return { name: pair, currentPrice, hourlyAverage, changePercent }
+}
+
+const buildCommentaryInput = (processRateTick: ProcessRateTickUseCase): CommentaryInput => ({
+  pairs: VALID_PAIRS.map((pair) =>
+    buildCommentaryInputPair(pair, processRateTick.getTicksForPair(pair)),
+  ),
+  generatedAt: new Date(),
+})
+
+const createGenerateCommentaryUseCase = (
+  aiCommentary: AiCommentaryPort,
+  processRateTick: ProcessRateTickUseCase,
+  appLogger: AppLoggerService,
+): GenerateCommentaryUseCase => ({
+  execute: async (): Promise<MarketCommentary> => {
+    const input = buildCommentaryInput(processRateTick)
     try {
-      const commentary = await this.aiCommentary.generateCommentary(input)
-      this.logger.log(JSON.stringify({ event: 'commentary_generated', timestamp: new Date().toISOString() }))
-      return commentary
+      return await aiCommentary.generateCommentary(input)
     } catch (error) {
-      this.appLogger.logError('generate_commentary_failed', error)
+      appLogger.logError('generate_commentary_failed', error)
       throw error
     }
-  }
+  },
+})
 
-  private buildCommentaryInput(): CommentaryInput {
-    return {
-      pairs: VALID_PAIRS.map((pair) => this.buildPairInput(pair)),
-      generatedAt: new Date(),
-    }
-  }
-
-  private buildPairInput(pair: CurrencyPairValue): CommentaryInputPair {
-    const ticks = this.processRateTickUseCase.getTicksForPair(pair)
-    const lastTick = ticks.at(-1)
-    const currentPrice = lastTick?.price.value ?? 0
-    const hourlyAverage = calculateHourlyAverage(ticks)
-    const changePercent = calculateChangePercent(currentPrice, hourlyAverage)
-    return { name: pair, currentPrice, hourlyAverage, changePercent }
-  }
-}
+export { GENERATE_COMMENTARY_USE_CASE, AI_COMMENTARY_PORT, createGenerateCommentaryUseCase }
+export type { GenerateCommentaryUseCase }

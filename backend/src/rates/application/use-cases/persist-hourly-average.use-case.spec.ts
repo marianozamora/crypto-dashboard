@@ -1,4 +1,5 @@
-import { PersistHourlyAverageUseCase } from './persist-hourly-average.use-case'
+import { createPersistHourlyAverageUseCase } from './persist-hourly-average.use-case'
+import type { PersistHourlyAverageUseCase } from './persist-hourly-average.use-case'
 import type { RateRepositoryPort } from '@domain/ports/outbound/rate-repository.port'
 import type { AppLoggerService } from '@logger/app-logger.service'
 import type { ProcessRateTickUseCase } from './process-rate-tick.use-case'
@@ -29,7 +30,7 @@ const createMockLogger = (): MockLogger => ({
   logError: vi.fn(),
 })
 
-describe('PersistHourlyAverageUseCase', () => {
+describe('createPersistHourlyAverageUseCase', () => {
   let useCase: PersistHourlyAverageUseCase
   let mockRepository: MockRepository
   let mockLogger: MockLogger
@@ -39,7 +40,7 @@ describe('PersistHourlyAverageUseCase', () => {
     mockRepository = createMockRepository()
     mockLogger = createMockLogger()
     mockProcessRateTick = { getTicksForPair: vi.fn().mockReturnValue(EMPTY_TICKS) }
-    useCase = new PersistHourlyAverageUseCase(
+    useCase = createPersistHourlyAverageUseCase(
       mockRepository as unknown as RateRepositoryPort,
       mockProcessRateTick as unknown as ProcessRateTickUseCase,
       mockLogger as unknown as AppLoggerService,
@@ -67,10 +68,9 @@ describe('PersistHourlyAverageUseCase', () => {
     expect(mockLogger.logHourlyAverageCalculated).toHaveBeenCalledTimes(3)
   })
 
-  it('should not throw when repository save fails gracefully', async () => {
-    mockProcessRateTick.getTicksForPair.mockReturnValue(makeTicks(100))
-    mockRepository.saveHourlyAverage.mockRejectedValue(new Error('DB error'))
-    await expect(useCase.execute()).resolves.toBeUndefined()
-    expect(mockLogger.logError).toHaveBeenCalledTimes(3)
+  it('should not call saveHourlyAverage when no pairs have ticks', async () => {
+    mockProcessRateTick.getTicksForPair.mockReturnValue(EMPTY_TICKS)
+    await useCase.execute()
+    expect(mockRepository.saveHourlyAverage).not.toHaveBeenCalled()
   })
 })

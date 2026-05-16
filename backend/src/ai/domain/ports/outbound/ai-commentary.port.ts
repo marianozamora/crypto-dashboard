@@ -3,7 +3,7 @@ import type { CurrencyPairValue } from '@domain/value-objects/currency-pair.vo'
 
 type CommentaryInputPair = {
   readonly name: CurrencyPairValue
-  readonly currentPrice: number
+  readonly currentPrice: number | null
   readonly hourlyAverage: number | null
   readonly changePercent: number | null
 }

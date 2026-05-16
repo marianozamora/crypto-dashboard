@@ -1,4 +1,5 @@
-import { GenerateCommentaryUseCase } from './generate-commentary.use-case'
+import { createGenerateCommentaryUseCase } from './generate-commentary.use-case'
+import type { GenerateCommentaryUseCase } from './generate-commentary.use-case'
 import type { AiCommentaryPort, CommentaryInput } from '@ai/domain/ports/outbound/ai-commentary.port'
 import type { AppLoggerService } from '@logger/app-logger.service'
 import type { ProcessRateTickUseCase } from '@application/use-cases/process-rate-tick.use-case'
@@ -30,7 +31,7 @@ const createMockLogger = (): MockLogger => ({
   logError: vi.fn(),
 })
 
-describe('GenerateCommentaryUseCase', () => {
+describe('createGenerateCommentaryUseCase', () => {
   let useCase: GenerateCommentaryUseCase
   let mockAiCommentary: MockAiCommentary
   let mockLogger: MockLogger
@@ -40,7 +41,7 @@ describe('GenerateCommentaryUseCase', () => {
     mockAiCommentary = createMockAiCommentary()
     mockLogger = createMockLogger()
     mockProcessRateTick = { getTicksForPair: vi.fn().mockReturnValue(EMPTY_TICKS) }
-    useCase = new GenerateCommentaryUseCase(
+    useCase = createGenerateCommentaryUseCase(
       mockAiCommentary as unknown as AiCommentaryPort,
       mockProcessRateTick as unknown as ProcessRateTickUseCase,
       mockLogger as unknown as AppLoggerService,
@@ -52,7 +53,7 @@ describe('GenerateCommentaryUseCase', () => {
     expect(result).toEqual(MOCK_COMMENTARY)
   })
 
-  it('should build correct input with all three pairs', async () => {
+  it('should build input with all three pairs', async () => {
     await useCase.execute()
     const input = mockAiCommentary.generateCommentary.mock.calls[0][0] as CommentaryInput
     const pairNames = input.pairs.map((p) => p.name)
@@ -61,15 +62,15 @@ describe('GenerateCommentaryUseCase', () => {
     expect(pairNames).toContain('ETH/BTC')
   })
 
-  it('should handle null hourly averages in input gracefully', async () => {
+  it('should handle empty ticks gracefully with null prices', async () => {
     mockProcessRateTick.getTicksForPair.mockReturnValue(EMPTY_TICKS)
-    const result = await useCase.execute()
+    await useCase.execute()
     const input = mockAiCommentary.generateCommentary.mock.calls[0][0] as CommentaryInput
+    expect(input.pairs.every((p) => p.currentPrice === null)).toBe(true)
     expect(input.pairs.every((p) => p.hourlyAverage === null)).toBe(true)
-    expect(result).toEqual(MOCK_COMMENTARY)
   })
 
-  it('should throw when AI adapter fails', async () => {
+  it('should throw and log error when AI adapter fails', async () => {
     const error = new Error('AI service unavailable')
     mockAiCommentary.generateCommentary.mockRejectedValue(error)
     await expect(useCase.execute()).rejects.toThrow('AI service unavailable')

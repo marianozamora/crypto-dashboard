@@ -1,4 +1,5 @@
-import { GetHourlyAverageUseCase } from './get-hourly-average.use-case'
+import { createGetHourlyAverageUseCase } from './get-hourly-average.use-case'
+import type { GetHourlyAverageUseCase } from './get-hourly-average.use-case'
 import type { RateRepositoryPort } from '@domain/ports/outbound/rate-repository.port'
 import { InvalidCurrencyPairError } from '@domain/value-objects/currency-pair.vo'
 
@@ -10,13 +11,13 @@ const createMockRepository = (): MockRepository => ({
   saveHourlyAverage: vi.fn().mockResolvedValue(undefined),
 })
 
-describe('GetHourlyAverageUseCase', () => {
+describe('createGetHourlyAverageUseCase', () => {
   let useCase: GetHourlyAverageUseCase
   let mockRepository: MockRepository
 
   beforeEach(() => {
     mockRepository = createMockRepository()
-    useCase = new GetHourlyAverageUseCase(mockRepository as unknown as RateRepositoryPort)
+    useCase = createGetHourlyAverageUseCase(mockRepository as unknown as RateRepositoryPort)
   })
 
   it('should return null when no average exists in repository', async () => {

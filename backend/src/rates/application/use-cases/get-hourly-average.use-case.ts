@@ -1,17 +1,20 @@
-import { Injectable, Inject } from '@nestjs/common'
 import { createCurrencyPair } from '@domain/value-objects/currency-pair.vo'
-import { RATE_REPOSITORY_PORT } from '@domain/ports/outbound/rate-repository.port'
 import type { RateRepositoryPort } from '@domain/ports/outbound/rate-repository.port'
-import type { GetHourlyAveragePort } from '@domain/ports/inbound/rate-use-cases.port'
 
-@Injectable()
-export class GetHourlyAverageUseCase implements GetHourlyAveragePort {
-  constructor(
-    @Inject(RATE_REPOSITORY_PORT) private readonly rateRepository: RateRepositoryPort,
-  ) {}
+const GET_HOURLY_AVERAGE_USE_CASE = Symbol('GetHourlyAverageUseCase')
 
-  async execute(pair: string): Promise<number | null> {
-    const currencyPair = createCurrencyPair(pair)
-    return this.rateRepository.findHourlyAverage(currencyPair)
-  }
+type GetHourlyAverageUseCase = {
+  execute(pair: string): Promise<number | null>
 }
+
+const createGetHourlyAverageUseCase = (
+  rateRepository: RateRepositoryPort,
+): GetHourlyAverageUseCase => ({
+  execute: async (pair): Promise<number | null> => {
+    const currencyPair = createCurrencyPair(pair)
+    return rateRepository.findHourlyAverage(currencyPair)
+  },
+})
+
+export { GET_HOURLY_AVERAGE_USE_CASE, createGetHourlyAverageUseCase }
+export type { GetHourlyAverageUseCase }
