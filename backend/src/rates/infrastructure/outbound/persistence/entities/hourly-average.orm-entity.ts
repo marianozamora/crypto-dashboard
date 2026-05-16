@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm'
 
 @Entity('hourly_averages')
 export class HourlyAverageOrmEntity {
@@ -8,7 +8,7 @@ export class HourlyAverageOrmEntity {
   @Column()
   pair!: string
 
-  @Column('decimal', { precision: 20, scale: 8 })
+  @Column('decimal', { precision: 18, scale: 8 })
   average!: number
 
   @Column()
@@ -16,4 +16,7 @@ export class HourlyAverageOrmEntity {
 
   @Column()
   periodEnd!: string
+
+  @CreateDateColumn()
+  createdAt!: Date
 }

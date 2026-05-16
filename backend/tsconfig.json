@@ -17,7 +17,8 @@
       "@ai/*": ["src/ai/*"],
       "@shared/*": ["src/shared/*"],
       "@config/*": ["src/shared/config/*"],
-      "@logger/*": ["src/shared/logger/*"]
+      "@logger/*": ["src/shared/logger/*"],
+      "@rates/*": ["src/rates/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

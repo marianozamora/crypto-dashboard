@@ -24,7 +24,7 @@ import { AiModule } from './ai/ai.module'
         synchronize: configService.get('NODE_ENV', { infer: true }) !== 'production',
       }),
     }),
-    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 10 }]),
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
     ScheduleModule.forRoot(),
     RatesModule,
     AiModule,

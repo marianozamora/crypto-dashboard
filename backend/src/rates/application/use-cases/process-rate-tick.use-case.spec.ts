@@ -20,6 +20,7 @@ const createMockLogger = (): MockLogger => ({
   logClientConnected: vi.fn(),
   logClientDisconnected: vi.fn(),
   logHourlyAverageCalculated: vi.fn(),
+  logCommentaryEmitted: vi.fn(),
   logError: vi.fn(),
 })
 

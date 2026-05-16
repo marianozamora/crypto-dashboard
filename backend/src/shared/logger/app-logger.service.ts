@@ -49,6 +49,12 @@ export class AppLoggerService {
     )
   }
 
+  logCommentaryEmitted(generatedAt: string): void {
+    this.logger.log(
+      JSON.stringify({ event: 'commentary_emitted', generatedAt, timestamp: new Date().toISOString() }),
+    )
+  }
+
   logError(event: string, error: unknown): void {
     const message = error instanceof Error ? error.message : String(error)
     this.logger.error(

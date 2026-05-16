@@ -26,6 +26,7 @@ import { TypeOrmRateRepository } from './infrastructure/outbound/persistence/typ
 import { RatesGateway } from './infrastructure/inbound/websocket/rates.gateway'
 import { FinnhubWsAdapter } from './infrastructure/inbound/finnhub/finnhub-ws.adapter'
 import { HealthController } from './infrastructure/inbound/health/health.controller'
+import { PersistHourlyAverageScheduler } from './infrastructure/inbound/schedulers/persist-hourly-average.scheduler'
 
 @Module({
   imports: [TypeOrmModule.forFeature([RateOrmEntity, HourlyAverageOrmEntity])],
@@ -59,7 +60,14 @@ import { HealthController } from './infrastructure/inbound/health/health.control
       inject: [RATE_REPOSITORY_PORT, PROCESS_RATE_TICK_USE_CASE, AppLoggerService],
     },
     FinnhubWsAdapter,
+    PersistHourlyAverageScheduler,
   ],
-  exports: [RATE_STREAM_PORT, PROCESS_RATE_TICK_USE_CASE, GET_HOURLY_AVERAGE_USE_CASE, RatesGateway],
+  exports: [
+    RATE_STREAM_PORT,
+    PROCESS_RATE_TICK_USE_CASE,
+    GET_HOURLY_AVERAGE_USE_CASE,
+    PERSIST_HOURLY_AVERAGE_USE_CASE,
+    RatesGateway,
+  ],
 })
 export class RatesModule {}

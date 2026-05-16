@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm'
 
 @Entity('rates')
 export class RateOrmEntity {
@@ -8,9 +8,12 @@ export class RateOrmEntity {
   @Column()
   pair!: string
 
-  @Column('decimal', { precision: 20, scale: 8 })
+  @Column('decimal', { precision: 18, scale: 8 })
   price!: number
 
   @Column('bigint')
   timestamp!: number
+
+  @CreateDateColumn()
+  createdAt!: Date
 }
