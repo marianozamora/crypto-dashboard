@@ -1,0 +1,22 @@
+{
+  "name": "crypto-dashboard",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run start:dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm run test",
+    "test:backend:coverage": "cd backend && npm run test:coverage",
+    "test:e2e": "cd e2e && npx playwright test",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "type-check": "npm run type-check:backend && npm run type-check:frontend",
+    "build": "npm run build:backend && npm run build:frontend",
+    "storybook": "cd frontend && npm run storybook",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7"
+  }
+}

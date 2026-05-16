@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "npm run test",
+      "npm run lint",
+      "npm run type-check",
+      "npm run build",
+      "npm run test:backend",
+      "npm run test:frontend",
+      "npm run test:coverage"
+    ],
+    "deny": [
+      "rm -rf",
+      "cat .env",
+      "cat */.env"
+    ]
+  }
+}
