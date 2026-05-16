@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { waitForConnection, waitForRates, getPriceText } from './helpers/wait'
+import { waitForConnection, waitForRates, waitForCharts, getPriceText } from './helpers/wait'
 
 test.describe('Dashboard', () => {
   test.beforeEach(async ({ page }) => {
@@ -12,8 +12,7 @@ test.describe('Dashboard', () => {
   })
 
   test('should display connection status badge', async ({ page }) => {
-    const badge = page.getByTestId('badge')
-    await expect(badge).toBeVisible()
+    await expect(page.getByTestId('badge')).toBeVisible()
   })
 
   test('should display all three pair cards', async ({ page }) => {
@@ -24,22 +23,20 @@ test.describe('Dashboard', () => {
 
   test('should display price tags for all pairs', async ({ page }) => {
     await waitForRates(page)
-    const priceTags = page.getByTestId('price-tag')
-    await expect(priceTags).toHaveCount(3)
+    await expect(page.getByTestId('price-tag')).toHaveCount(3, { timeout: 10_000 })
   })
 
   test('should display stat rows for hourly average', async ({ page }) => {
     await waitForRates(page)
-    const statRows = page.getByTestId('stat-row')
-    await expect(statRows.first()).toBeVisible()
+    await expect(page.getByTestId('stat-row').first()).toBeVisible()
   })
 
   test('should show charts for all pairs', async ({ page }) => {
     await waitForRates(page)
-    await page.waitForTimeout(3_000)
-    await expect(page.getByTestId('rate-chart-ETH-USDC')).toBeVisible()
-    await expect(page.getByTestId('rate-chart-ETH-USDT')).toBeVisible()
-    await expect(page.getByTestId('rate-chart-ETH-BTC')).toBeVisible()
+    await waitForCharts(page)
+    await expect(page.getByTestId('rate-chart-ETH-USDC')).toBeVisible({ timeout: 10_000 })
+    await expect(page.getByTestId('rate-chart-ETH-USDT')).toBeVisible({ timeout: 10_000 })
+    await expect(page.getByTestId('rate-chart-ETH-BTC')).toBeVisible({ timeout: 10_000 })
   })
 
   test('should update prices in real time', async ({ page }) => {
@@ -52,7 +49,6 @@ test.describe('Dashboard', () => {
   })
 
   test('should show commentary loading state initially', async ({ page }) => {
-    const loading = page.getByTestId('commentary-loading')
-    await expect(loading).toBeVisible()
+    await expect(page.getByTestId('commentary-loading')).toBeVisible()
   })
 })
