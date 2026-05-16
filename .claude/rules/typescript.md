@@ -170,3 +170,24 @@ const el = document.getElementById('root')
 if (!(el instanceof HTMLElement)) throw new Error('Root element not found')
 // el is now HTMLElement
 ```
+
+## Zero classes in frontend
+
+Use factory functions instead of classes everywhere in the frontend.
+The only exception is `react-error-boundary`, which abstracts the class
+requirement internally.
+
+**Wrong:**
+```typescript
+class WebSocketClient {
+  connect(): void { ... }
+}
+```
+
+**Right:**
+```typescript
+type WebSocketClient = { connect(): void }
+const createWebSocketClient = (options: WebSocketClientOptions): WebSocketClient => ({
+  connect: () => { ... },
+})
+```
