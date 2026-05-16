@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppLoggerService } from '@logger/app-logger.service'
 import { RATE_REPOSITORY_PORT } from '@domain/ports/outbound/rate-repository.port'
 import type { RateRepositoryPort } from '@domain/ports/outbound/rate-repository.port'
@@ -19,10 +20,22 @@ import {
   createPersistHourlyAverageUseCase,
 } from '@application/use-cases/persist-hourly-average.use-case'
 import type { PersistHourlyAverageUseCase } from '@application/use-cases/persist-hourly-average.use-case'
+import { RateOrmEntity } from './infrastructure/outbound/persistence/entities/rate.orm-entity'
+import { HourlyAverageOrmEntity } from './infrastructure/outbound/persistence/entities/hourly-average.orm-entity'
+import { TypeOrmRateRepository } from './infrastructure/outbound/persistence/typeorm-rate.repository'
+import { RatesGateway } from './infrastructure/inbound/websocket/rates.gateway'
+import { FinnhubWsAdapter } from './infrastructure/inbound/finnhub/finnhub-ws.adapter'
+import { HealthController } from './infrastructure/inbound/health/health.controller'
 
 @Module({
+  imports: [TypeOrmModule.forFeature([RateOrmEntity, HourlyAverageOrmEntity])],
+  controllers: [HealthController],
   providers: [
     AppLoggerService,
+    TypeOrmRateRepository,
+    { provide: RATE_REPOSITORY_PORT, useExisting: TypeOrmRateRepository },
+    RatesGateway,
+    { provide: RATE_STREAM_PORT, useExisting: RatesGateway },
     {
       provide: PROCESS_RATE_TICK_USE_CASE,
       useFactory: (stream: RateStreamPort, logger: AppLoggerService): ProcessRateTickUseCase =>
@@ -45,7 +58,8 @@ import type { PersistHourlyAverageUseCase } from '@application/use-cases/persist
         createPersistHourlyAverageUseCase(repo, processRateTick, logger),
       inject: [RATE_REPOSITORY_PORT, PROCESS_RATE_TICK_USE_CASE, AppLoggerService],
     },
+    FinnhubWsAdapter,
   ],
-  exports: [PROCESS_RATE_TICK_USE_CASE, GET_HOURLY_AVERAGE_USE_CASE, PERSIST_HOURLY_AVERAGE_USE_CASE],
+  exports: [RATE_STREAM_PORT, PROCESS_RATE_TICK_USE_CASE, GET_HOURLY_AVERAGE_USE_CASE, RatesGateway],
 })
 export class RatesModule {}
