@@ -2,14 +2,31 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
+  shared:
+    name: Shared types
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: shared
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: shared/package-lock.json
+      - run: npm ci
+      - run: npm run type-check
+
   backend:
     name: Backend
     runs-on: ubuntu-latest
+    needs: shared
     defaults:
       run:
         working-directory: backend
@@ -21,8 +38,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
       - run: npm ci
-      - name: Build shared package
-        run: node_modules/.bin/tsc --project ../shared/tsconfig.json
+        working-directory: shared
+      - run: npm run build
+        working-directory: shared
+      - run: npm ci
       - run: npm run lint
       - run: npm run type-check
       - run: npm run test:coverage
@@ -30,6 +49,7 @@ jobs:
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
+    needs: shared
     defaults:
       run:
         working-directory: frontend
@@ -41,15 +61,14 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
-      - name: Build shared package
-        run: node_modules/.bin/tsc --project ../shared/tsconfig.json
       - run: npm run lint
       - run: npm run type-check
       - run: npm run test:coverage
 
   storybook:
-    name: Storybook
+    name: Storybook build
     runs-on: ubuntu-latest
+    needs: frontend
     defaults:
       run:
         working-directory: frontend
@@ -61,8 +80,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
-      - name: Build shared package
-        run: node_modules/.bin/tsc --project ../shared/tsconfig.json
       - run: npm run storybook:build
 
   deploy:
@@ -80,7 +97,7 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
   e2e:
-    name: E2E
+    name: E2E tests
     runs-on: ubuntu-latest
     needs: [backend, frontend]
     steps:
@@ -88,19 +105,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Start services
-        run: docker-compose up -d
-      - name: Install e2e dependencies
+      - run: npm ci
         working-directory: e2e
-        run: npm ci
       - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
         working-directory: e2e
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
+      - name: Start services
+        run: docker compose up -d
+        env:
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Wait for backend health
+        run: |
+          for i in {1..30}; do
+            curl -sf http://localhost:3001/health && break
+            sleep 2
+          done
+      - run: npm test
         working-directory: e2e
-        run: npx playwright test
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report
-          path: playwright-report/
+          path: e2e/playwright-report/
