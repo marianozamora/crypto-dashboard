@@ -29,4 +29,4 @@ const WebSocketProvider = ({ children }: WebSocketProviderProps): JSX.Element =>
   )
 }
 
-export { WebSocketProvider, useWebSocketContext, type WebSocketContextValue, type WebSocketProviderProps }
+export { WebSocketContext, WebSocketProvider, useWebSocketContext, type WebSocketContextValue, type WebSocketProviderProps }
