@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-npm run lint
-npm run type-check
-npm run test
+npm run lint:backend
+npm run type-check:backend
+npm run test:backend
