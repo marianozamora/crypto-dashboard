@@ -11,5 +11,10 @@ const calculateHourlyAverage = (ticks: readonly RateTickForAggregation[]): numbe
   return sum / ticks.length
 }
 
-export { calculateHourlyAverage }
+const calculateChangePercent = (current: number, previous: number | null): number | null => {
+  if (previous === null || previous === 0) return null
+  return ((current - previous) / previous) * 100
+}
+
+export { calculateHourlyAverage, calculateChangePercent }
 export type { RateTickForAggregation }
