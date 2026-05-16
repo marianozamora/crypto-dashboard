@@ -1,28 +1,32 @@
-import { createContext, useContext, type ReactNode } from 'react'
+import { createContext, useContext, type ReactNode, type JSX } from 'react'
 import type { ConnectionState } from '@crypto/shared'
+import { useWebSocket } from '@features/rates/hooks/useWebSocket'
 
 type WebSocketContextValue = {
-  connectionState: ConnectionState
+  readonly connectionState: ConnectionState
 }
 
 const WebSocketContext = createContext<WebSocketContextValue | null>(null)
 
 const useWebSocketContext = (): WebSocketContextValue => {
   const context = useContext(WebSocketContext)
-  if (!context) {
+  if (context === null) {
     throw new Error('useWebSocketContext must be used within WebSocketProvider')
   }
   return context
 }
 
 type WebSocketProviderProps = {
-  children: ReactNode
+  readonly children: ReactNode
 }
 
-const WebSocketProvider = ({ children }: WebSocketProviderProps): JSX.Element => (
-  <WebSocketContext.Provider value={{ connectionState: 'connecting' }}>
-    {children}
-  </WebSocketContext.Provider>
-)
+const WebSocketProvider = ({ children }: WebSocketProviderProps): JSX.Element => {
+  const { connectionState } = useWebSocket()
+  return (
+    <WebSocketContext.Provider value={{ connectionState }}>
+      {children}
+    </WebSocketContext.Provider>
+  )
+}
 
-export { WebSocketProvider, useWebSocketContext, type WebSocketContextValue }
+export { WebSocketProvider, useWebSocketContext, type WebSocketContextValue, type WebSocketProviderProps }
