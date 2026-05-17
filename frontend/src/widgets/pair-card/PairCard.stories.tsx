@@ -1,26 +1,12 @@
-import type { Meta, StoryObj, StoryFn } from '@storybook/react'
-import { useEffect } from 'react'
-import type { RateUpdate } from '@crypto/shared'
+import type { Meta, StoryObj } from '@storybook/react'
 import { PairCard } from './PairCard'
-import { useRatesStore } from '@features/rates/store/rates.store'
-
-const withRate = (rate: RateUpdate | null): { decorators: ((Story: StoryFn) => JSX.Element)[] } => ({
-  decorators: [
-    (Story: StoryFn): JSX.Element => {
-      useEffect((): (() => void) => {
-        if (rate !== null) useRatesStore.getState().updateRate(rate)
-        return (): void => { useRatesStore.getState().reset() }
-      }, [])
-      return <Story />
-    },
-  ],
-})
-
-const base = {
-  pair: 'ETH/USDC' as const,
-  timestamp: new Date().toISOString(),
-  hourlyAverage: 2310.0,
-}
+import { withRate } from '@test-utils/storybook.decorators'
+import {
+  ETH_USDC_RATE,
+  ETH_USDC_RATE_ABOVE_AVG,
+  ETH_USDC_RATE_BELOW_AVG,
+  ETH_BTC_RATE,
+} from '@test-utils/fixtures'
 
 const meta: Meta<typeof PairCard> = {
   title: 'Widgets/PairCard',
@@ -33,19 +19,19 @@ type Story = StoryObj<typeof PairCard>
 
 export const LiveData: Story = {
   args: { pair: 'ETH/USDC' },
-  ...withRate({ ...base, price: 2341.56 }),
+  ...withRate({ ...ETH_USDC_RATE, timestamp: new Date().toISOString() }),
 }
 export const PriceAboveAverage: Story = {
   args: { pair: 'ETH/USDC' },
-  ...withRate({ ...base, price: 2400.0 }),
+  ...withRate({ ...ETH_USDC_RATE_ABOVE_AVG, timestamp: new Date().toISOString() }),
 }
 export const PriceBelowAverage: Story = {
   args: { pair: 'ETH/USDC' },
-  ...withRate({ ...base, price: 2200.0 }),
+  ...withRate({ ...ETH_USDC_RATE_BELOW_AVG, timestamp: new Date().toISOString() }),
 }
 export const BTCPair: Story = {
   args: { pair: 'ETH/BTC' },
-  ...withRate({ pair: 'ETH/BTC', price: 0.052134, timestamp: base.timestamp, hourlyAverage: 0.0519 }),
+  ...withRate({ ...ETH_BTC_RATE, timestamp: new Date().toISOString() }),
 }
 export const Loading: Story = {
   args: { pair: 'ETH/USDC' },

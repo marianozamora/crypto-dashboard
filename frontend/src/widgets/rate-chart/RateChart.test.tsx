@@ -1,26 +1,16 @@
 import { render, screen, act } from '@testing-library/react'
 import { RateChart } from './RateChart'
 import { useRatesStore } from '@features/rates/store/rates.store'
-import type { RateUpdate } from '@crypto/shared'
+import {
+  ETH_USDC_RATE,
+  ETH_USDC_RATE_TICK_2,
+  ETH_BTC_RATE,
+} from '@test-utils/fixtures'
 
-vi.mock('recharts', () => ({
-  LineChart: ({ children }: { children: React.ReactNode }): JSX.Element => <div>{children}</div>,
-  Line: (): null => null,
-  XAxis: (): null => null,
-  YAxis: (): null => null,
-  CartesianGrid: (): null => null,
-  Tooltip: (): null => null,
-  ResponsiveContainer: ({ children }: { children: React.ReactNode }): JSX.Element => (
-    <div>{children}</div>
-  ),
-}))
+vi.mock('recharts', async () => import('@test-utils/recharts.mock').then((m) => m.rechartsStubs))
 
-const mockRate: RateUpdate = {
-  pair: 'ETH/USDC',
-  price: 2341.56,
-  timestamp: '2025-01-15T10:30:00.000Z',
-  hourlyAverage: 2310.0,
-}
+const PAIR = 'ETH/USDC' as const
+const PAIR_BTC = 'ETH/BTC' as const
 
 describe('RateChart', () => {
   beforeEach(() => {
@@ -28,24 +18,35 @@ describe('RateChart', () => {
   })
 
   it('should show spinner while no data', () => {
-    render(<RateChart pair="ETH/USDC" />)
+    render(<RateChart pair={PAIR} />)
     expect(screen.getByTestId('chart-loading-ETH-USDC')).toBeInTheDocument()
   })
 
-  it('should show chart after receiving rate data', () => {
-    const { rerender } = render(<RateChart pair="ETH/USDC" />)
-    act(() => { useRatesStore.getState().updateRate(mockRate) })
-    rerender(<RateChart pair="ETH/USDC" />)
+  it('should transition from spinner to chart reactively when rate arrives', () => {
+    render(<RateChart pair={PAIR} />)
+    expect(screen.getByTestId('chart-loading-ETH-USDC')).toBeInTheDocument()
+
+    act(() => { useRatesStore.getState().updateRate(ETH_USDC_RATE) })
+
+    expect(screen.queryByTestId('chart-loading-ETH-USDC')).not.toBeInTheDocument()
     expect(screen.getByTestId('rate-chart-ETH-USDC')).toBeInTheDocument()
   })
 
-  it('should show pair label in card title', () => {
-    render(<RateChart pair="ETH/USDC" />)
+  it('should remain visible after multiple rate updates without remounting', () => {
+    render(<RateChart pair={PAIR} />)
+    act(() => { useRatesStore.getState().updateRate(ETH_USDC_RATE) })
+    act(() => { useRatesStore.getState().updateRate(ETH_USDC_RATE_TICK_2) })
+    expect(screen.getByTestId('rate-chart-ETH-USDC')).toBeInTheDocument()
+    expect(screen.queryByTestId('chart-loading-ETH-USDC')).not.toBeInTheDocument()
+  })
+
+  it('should show pair label in card title when rendered', () => {
+    render(<RateChart pair={PAIR} />)
     expect(screen.getByText('ETH / USDC Chart')).toBeInTheDocument()
   })
 
-  it('should show BTC pair label for ETH/BTC', () => {
-    render(<RateChart pair="ETH/BTC" />)
+  it('should show BTC pair label for ETH/BTC when rendered', () => {
+    render(<RateChart pair={PAIR_BTC} />)
     expect(screen.getByText('ETH / BTC Chart')).toBeInTheDocument()
   })
 })

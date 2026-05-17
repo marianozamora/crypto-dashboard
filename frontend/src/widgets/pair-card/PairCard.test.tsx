@@ -1,26 +1,20 @@
 import { render, screen, act } from '@testing-library/react'
 import { PairCard } from './PairCard'
 import { useRatesStore } from '@features/rates/store/rates.store'
-import type { RateUpdate } from '@crypto/shared'
+import {
+  ETH_USDC_RATE,
+  ETH_USDC_RATE_BELOW_AVG,
+  ETH_BTC_RATE,
+  EXPECTED_ETH_USDC_PRICE,
+  EXPECTED_ETH_USDC_HOURLY_AVG,
+  EXPECTED_CHANGE_ABOVE_AVG,
+  EXPECTED_CHANGE_BELOW_AVG,
+} from '@test-utils/fixtures'
 
-vi.mock('recharts', () => ({
-  LineChart: ({ children }: { children: React.ReactNode }): JSX.Element => <div>{children}</div>,
-  Line: (): null => null,
-  XAxis: (): null => null,
-  YAxis: (): null => null,
-  CartesianGrid: (): null => null,
-  Tooltip: (): null => null,
-  ResponsiveContainer: ({ children }: { children: React.ReactNode }): JSX.Element => (
-    <div>{children}</div>
-  ),
-}))
+vi.mock('recharts', async () => import('@test-utils/recharts.mock').then((m) => m.rechartsStubs))
 
-const mockRate: RateUpdate = {
-  pair: 'ETH/USDC',
-  price: 2341.56,
-  timestamp: '2025-01-15T10:30:00.000Z',
-  hourlyAverage: 2310.0,
-}
+const PAIR = 'ETH/USDC' as const
+const PAIR_BTC = 'ETH/BTC' as const
 
 describe('PairCard', () => {
   beforeEach(() => {
@@ -28,36 +22,71 @@ describe('PairCard', () => {
   })
 
   it('should show skeleton when no rate data', () => {
-    render(<PairCard pair="ETH/USDC" />)
+    render(<PairCard pair={PAIR} />)
     expect(screen.getByTestId('price-tag-skeleton')).toBeInTheDocument()
   })
 
-  it('should show price when rate data available', () => {
-    act(() => { useRatesStore.getState().updateRate(mockRate) })
-    render(<PairCard pair="ETH/USDC" />)
-    expect(screen.getByTestId('price-tag')).toHaveTextContent('2,341.56')
+  it('should show formatted price when rate data available', () => {
+    act(() => { useRatesStore.getState().updateRate(ETH_USDC_RATE) })
+    render(<PairCard pair={PAIR} />)
+    expect(screen.getByTestId('price-tag')).toHaveTextContent(EXPECTED_ETH_USDC_PRICE)
   })
 
-  it('should show pair label as card title', () => {
-    render(<PairCard pair="ETH/USDC" />)
+  it('should show pair label as card title when rendered', () => {
+    render(<PairCard pair={PAIR} />)
     expect(screen.getByText('ETH / USDC')).toBeInTheDocument()
   })
 
-  it('should show hourly average when data available', () => {
-    act(() => { useRatesStore.getState().updateRate(mockRate) })
-    render(<PairCard pair="ETH/USDC" />)
-    expect(screen.getByText('1h Avg')).toBeInTheDocument()
+  it('should show formatted hourly average value when rate data available', () => {
+    act(() => { useRatesStore.getState().updateRate(ETH_USDC_RATE) })
+    render(<PairCard pair={PAIR} />)
+    expect(screen.getAllByTestId('stat-row-value')[0]).toHaveTextContent(EXPECTED_ETH_USDC_HOURLY_AVG)
   })
 
-  it('should have data-testid with pair identifier', () => {
-    render(<PairCard pair="ETH/USDC" />)
+  it('should show positive percentage change with green color when price above average', () => {
+    act(() => { useRatesStore.getState().updateRate(ETH_USDC_RATE) })
+    render(<PairCard pair={PAIR} />)
+    const changeCell = screen.getAllByTestId('stat-row-value')[1]
+    expect(changeCell).toHaveTextContent(EXPECTED_CHANGE_ABOVE_AVG)
+    expect(changeCell).toHaveClass('text-accent-green')
+  })
+
+  it('should show negative percentage change with red color when price below average', () => {
+    act(() => { useRatesStore.getState().updateRate(ETH_USDC_RATE_BELOW_AVG) })
+    render(<PairCard pair={PAIR} />)
+    const changeCell = screen.getAllByTestId('stat-row-value')[1]
+    expect(changeCell).toHaveTextContent(EXPECTED_CHANGE_BELOW_AVG)
+    expect(changeCell).toHaveClass('text-accent-red')
+  })
+
+  it('should update price in DOM reactively when store receives rate update', () => {
+    render(<PairCard pair={PAIR} />)
+    expect(screen.getByTestId('price-tag-skeleton')).toBeInTheDocument()
+
+    act(() => { useRatesStore.getState().updateRate(ETH_USDC_RATE) })
+
+    expect(screen.queryByTestId('price-tag-skeleton')).not.toBeInTheDocument()
+    expect(screen.getByTestId('price-tag')).toHaveTextContent(EXPECTED_ETH_USDC_PRICE)
+  })
+
+  it('should transition mini chart from empty to visible when rate arrives', () => {
+    render(<PairCard pair={PAIR} />)
+    expect(screen.getByTestId('chart-loading-ETH-USDC')).toBeInTheDocument()
+
+    act(() => { useRatesStore.getState().updateRate(ETH_USDC_RATE) })
+
+    expect(screen.queryByTestId('chart-loading-ETH-USDC')).not.toBeInTheDocument()
+    expect(screen.getByTestId('rate-chart-ETH-USDC')).toBeInTheDocument()
+  })
+
+  it('should have data-testid with pair identifier when rendered', () => {
+    render(<PairCard pair={PAIR} />)
     expect(screen.getByTestId('pair-card-ETH-USDC')).toBeInTheDocument()
   })
 
-  it('should use BTC symbol for ETH/BTC pair', () => {
-    const btcRate: RateUpdate = { ...mockRate, pair: 'ETH/BTC', price: 0.052134, hourlyAverage: 0.051 }
-    act(() => { useRatesStore.getState().updateRate(btcRate) })
-    render(<PairCard pair="ETH/BTC" />)
+  it('should use BTC symbol for ETH/BTC pair when rate data available', () => {
+    act(() => { useRatesStore.getState().updateRate(ETH_BTC_RATE) })
+    render(<PairCard pair={PAIR_BTC} />)
     expect(screen.getByTestId('price-tag')).toHaveTextContent('₿')
   })
 })

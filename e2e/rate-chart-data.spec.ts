@@ -11,30 +11,12 @@ test.describe('RateChart real data rendering', () => {
     await waitForRatesAndCharts(page)
   })
 
-  test('should transition all charts from loading spinner to chart container', async ({ page }) => {
+  test('should transition all charts from loading spinner to chart container when data arrives', async ({ page }) => {
     for (const pair of PAIRS) {
       await expect(page.getByTestId(`rate-chart-${pair}`)).toBeVisible({
         timeout: CHART_VISIBLE_TIMEOUT_MS,
       })
       await expect(page.getByTestId(`chart-loading-${pair}`)).not.toBeVisible()
     }
-  })
-
-  test('should show chart for ETH/USDC pair', async ({ page }) => {
-    await expect(page.getByTestId('rate-chart-ETH-USDC')).toBeVisible({
-      timeout: CHART_VISIBLE_TIMEOUT_MS,
-    })
-  })
-
-  test('should show chart for ETH/USDT pair', async ({ page }) => {
-    await expect(page.getByTestId('rate-chart-ETH-USDT')).toBeVisible({
-      timeout: CHART_VISIBLE_TIMEOUT_MS,
-    })
-  })
-
-  test('should show chart for ETH/BTC pair', async ({ page }) => {
-    await expect(page.getByTestId('rate-chart-ETH-BTC')).toBeVisible({
-      timeout: CHART_VISIBLE_TIMEOUT_MS,
-    })
   })
 })
