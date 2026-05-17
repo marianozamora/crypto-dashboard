@@ -7,8 +7,13 @@ import {
 import { DataCard } from '@organisms/DataCard'
 import { PriceDisplay } from '@molecules/PriceDisplay'
 import { StatRow } from '@molecules/StatRow'
+import { ChartTooltip } from '@molecules/ChartTooltip'
 import { useRates } from '@features/rates/hooks/useRates'
-import { PAIR_LABELS, PAIR_CURRENCY_SYMBOLS, MAX_CHART_TICKS } from '@config/constants'
+import {
+  PAIR_LABELS, PAIR_CURRENCY_SYMBOLS, MAX_CHART_TICKS,
+  CHART_LINE_COLOR, CHART_LINE_STROKE_WIDTH,
+  CHART_GRID_COLOR, CHART_AXIS_COLOR, CHART_AXIS_FONT_SIZE, CHART_Y_AXIS_WIDTH,
+} from '@config/constants'
 import { formatPrice, formatPercent, formatChartTime } from '@lib/utils/format'
 
 type PairCardProps = {
@@ -19,15 +24,6 @@ type ChartDataPoint = {
   readonly timestamp: number
   readonly price: number
   readonly time: string
-}
-
-type TooltipPayload = { readonly value: number }
-
-type ChartTooltipProps = {
-  readonly active?: boolean
-  readonly payload?: readonly TooltipPayload[]
-  readonly label?: string
-  readonly symbol: string
 }
 
 const buildDataPoint = (rate: RateUpdate): ChartDataPoint => {
@@ -41,17 +37,6 @@ const appendTick = (
 ): readonly ChartDataPoint[] => {
   const updated = [...prev, next]
   return updated.length > MAX_CHART_TICKS ? updated.slice(-MAX_CHART_TICKS) : updated
-}
-
-const ChartTooltip = ({ active, payload, label, symbol }: ChartTooltipProps): JSX.Element | null => {
-  if (!active || !payload?.length) return null
-  const value = payload[0]?.value ?? 0
-  return (
-    <div className="bg-surface-elevated border border-white/10 rounded-lg p-3 text-xs">
-      <p className="text-white/50 font-mono">{label}</p>
-      <p className="text-white font-mono">{symbol}{formatPrice(value)}</p>
-    </div>
-  )
 }
 
 const buildHourlyAverageLabel = (pair: CurrencyPair, avg: number | null): string | null => {
@@ -92,11 +77,11 @@ const FilledChart = ({ data, symbol, pair }: {
   <div className="h-[120px]" data-testid={`rate-chart-${pair.replace('/', '-')}`}>
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={[...data]}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-        <XAxis dataKey="time" tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10 }} interval="preserveStartEnd" />
-        <YAxis orientation="right" domain={['auto', 'auto']} tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10 }} tickFormatter={(v: number): string => formatPrice(v)} width={60} />
+        <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_COLOR} />
+        <XAxis dataKey="time" tick={{ fill: CHART_AXIS_COLOR, fontSize: CHART_AXIS_FONT_SIZE }} interval="preserveStartEnd" />
+        <YAxis orientation="right" domain={['auto', 'auto']} tick={{ fill: CHART_AXIS_COLOR, fontSize: CHART_AXIS_FONT_SIZE }} tickFormatter={(v: number): string => formatPrice(v)} width={CHART_Y_AXIS_WIDTH} />
         <Tooltip content={<ChartTooltip symbol={symbol} />} />
-        <Line type="monotone" dataKey="price" stroke="#4da6ff" strokeWidth={2} dot={false} isAnimationActive={false} />
+        <Line type="monotone" dataKey="price" stroke={CHART_LINE_COLOR} strokeWidth={CHART_LINE_STROKE_WIDTH} dot={false} isAnimationActive={false} />
       </LineChart>
     </ResponsiveContainer>
   </div>
