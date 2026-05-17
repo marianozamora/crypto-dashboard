@@ -4,7 +4,6 @@ import { useRatesStore } from '@features/rates/store/rates.store'
 import {
   ETH_USDC_RATE,
   ETH_USDC_RATE_TICK_2,
-  ETH_BTC_RATE,
 } from '@test-utils/fixtures'
 
 vi.mock('recharts', async () => import('@test-utils/recharts.mock').then((m) => m.rechartsStubs))

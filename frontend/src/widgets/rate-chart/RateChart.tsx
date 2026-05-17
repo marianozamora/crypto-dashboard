@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { CurrencyPair, RateUpdate } from '@crypto/shared'
+import type { CurrencyPair } from '@crypto/shared'
 import {
   LineChart, Line, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer,
