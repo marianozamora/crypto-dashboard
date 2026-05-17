@@ -5,9 +5,9 @@ type SpinnerProps = {
 }
 
 const SIZE_CLASSES: Record<SpinnerSize, string> = {
-  sm: 'w-4 h-4 border-2',
-  md: 'w-8 h-8 border-2',
-  lg: 'w-12 h-12 border-4',
+  sm: 'w-3 h-3 border',
+  md: 'w-6 h-6 border-2',
+  lg: 'w-10 h-10 border-2',
 }
 
 const Spinner = ({ size = 'md' }: SpinnerProps): JSX.Element => (

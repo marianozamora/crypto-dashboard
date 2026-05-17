@@ -3,6 +3,18 @@ import { PairCard } from './PairCard'
 import { useRatesStore } from '@features/rates/store/rates.store'
 import type { RateUpdate } from '@crypto/shared'
 
+vi.mock('recharts', () => ({
+  LineChart: ({ children }: { children: React.ReactNode }): JSX.Element => <div>{children}</div>,
+  Line: (): null => null,
+  XAxis: (): null => null,
+  YAxis: (): null => null,
+  CartesianGrid: (): null => null,
+  Tooltip: (): null => null,
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }): JSX.Element => (
+    <div>{children}</div>
+  ),
+}))
+
 const mockRate: RateUpdate = {
   pair: 'ETH/USDC',
   price: 2341.56,
@@ -34,7 +46,7 @@ describe('PairCard', () => {
   it('should show hourly average when data available', () => {
     act(() => { useRatesStore.getState().updateRate(mockRate) })
     render(<PairCard pair="ETH/USDC" />)
-    expect(screen.getByText('Hourly Average')).toBeInTheDocument()
+    expect(screen.getByText('1h Avg')).toBeInTheDocument()
   })
 
   it('should have data-testid with pair identifier', () => {

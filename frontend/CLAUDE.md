@@ -93,3 +93,13 @@ npm run test:coverage    # Vitest with coverage report
 npm run storybook        # Storybook dev server
 npm run storybook:build  # Storybook static build
 ```
+
+## Design system
+
+Always read `/STYLE.md` before creating or editing components. Follow it strictly:
+- Use only colors defined in STYLE.md
+- Numbers and prices: always `font-mono`
+- Labels: always `stat-label` class (`text-white/40 text-xs uppercase tracking-wide`)
+- Cards: always `.card` class (defined in `globals.css`)
+- Never add `box-shadow`
+- Never use light backgrounds

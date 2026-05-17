@@ -1,13 +1,8 @@
 import { useState, useEffect } from 'react'
 import type { CurrencyPair, RateUpdate } from '@crypto/shared'
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
+  LineChart, Line, XAxis, YAxis,
+  CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
 import { DataCard } from '@organisms/DataCard'
 import { Spinner } from '@atoms/Spinner'
@@ -25,19 +20,6 @@ type ChartDataPoint = {
   readonly time: string
 }
 
-const buildDataPoint = (rate: RateUpdate): ChartDataPoint => {
-  const ts = new Date(rate.timestamp).getTime()
-  return { timestamp: ts, price: rate.price, time: formatChartTime(ts) }
-}
-
-const appendTick = (
-  prev: readonly ChartDataPoint[],
-  newPoint: ChartDataPoint,
-): readonly ChartDataPoint[] => {
-  const updated = [...prev, newPoint]
-  return updated.length > MAX_CHART_TICKS ? updated.slice(-MAX_CHART_TICKS) : updated
-}
-
 type TooltipPayload = { readonly value: number }
 
 type CustomTooltipProps = {
@@ -47,12 +29,25 @@ type CustomTooltipProps = {
   readonly symbol: string
 }
 
+const buildDataPoint = (rate: RateUpdate): ChartDataPoint => {
+  const ts = new Date(rate.timestamp).getTime()
+  return { timestamp: ts, price: rate.price, time: formatChartTime(ts) }
+}
+
+const appendTick = (
+  prev: readonly ChartDataPoint[],
+  next: ChartDataPoint,
+): readonly ChartDataPoint[] => {
+  const updated = [...prev, next]
+  return updated.length > MAX_CHART_TICKS ? updated.slice(-MAX_CHART_TICKS) : updated
+}
+
 const CustomTooltip = ({ active, payload, label, symbol }: CustomTooltipProps): JSX.Element | null => {
   if (!active || !payload?.length) return null
   const value = payload[0]?.value ?? 0
   return (
-    <div className="bg-surface-elevated border border-white/10 rounded p-2 text-xs">
-      <p className="text-white/50">{label}</p>
+    <div className="bg-surface-elevated border border-white/10 rounded-lg p-3 text-xs">
+      <p className="text-white/50 font-mono">{label}</p>
       <p className="text-white font-mono">{symbol}{formatPrice(value)}</p>
     </div>
   )
@@ -73,7 +68,7 @@ const RateChart = ({ pair }: RateChartProps): JSX.Element => {
     return (
       <DataCard title={`${PAIR_LABELS[pair] ?? pair} Chart`}>
         <div
-          className="flex items-center justify-center h-40"
+          className="flex items-center justify-center h-[200px]"
           data-testid={`chart-loading-${pair.replace('/', '-')}`}
         >
           <Spinner size="md" />
@@ -84,30 +79,14 @@ const RateChart = ({ pair }: RateChartProps): JSX.Element => {
 
   return (
     <DataCard title={`${PAIR_LABELS[pair] ?? pair} Chart`}>
-      <div className="h-40" data-testid={`rate-chart-${pair.replace('/', '-')}`}>
+      <div className="h-[200px]" data-testid={`rate-chart-${pair.replace('/', '-')}`}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={[...data]}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-            <XAxis
-              dataKey="time"
-              tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10 }}
-              interval="preserveStartEnd"
-            />
-            <YAxis
-              domain={['auto', 'auto']}
-              tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10 }}
-              tickFormatter={(v: number): string => formatPrice(v)}
-              width={70}
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+            <XAxis dataKey="time" tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10 }} interval="preserveStartEnd" />
+            <YAxis orientation="right" domain={['auto', 'auto']} tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10 }} tickFormatter={(v: number): string => formatPrice(v)} width={60} />
             <Tooltip content={<CustomTooltip symbol={symbol} />} />
-            <Line
-              type="monotone"
-              dataKey="price"
-              stroke="#4da6ff"
-              strokeWidth={2}
-              dot={false}
-              isAnimationActive={false}
-            />
+            <Line type="monotone" dataKey="price" stroke="#4da6ff" strokeWidth={2} dot={false} isAnimationActive={false} />
           </LineChart>
         </ResponsiveContainer>
       </div>

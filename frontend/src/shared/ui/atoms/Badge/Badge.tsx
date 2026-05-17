@@ -5,25 +5,25 @@ type BadgeProps = {
 }
 
 type BadgeConfig = {
-  readonly dot: string
-  readonly text: string
+  readonly dotClass: string
+  readonly textClass: string
   readonly label: string
 }
 
 const BADGE_CONFIG: Record<BadgeVariant, BadgeConfig> = {
   connecting: {
-    dot: 'bg-accent-yellow animate-pulse-slow',
-    text: 'text-accent-yellow',
+    dotClass: 'bg-accent-yellow animate-pulse-slow',
+    textClass: 'text-accent-yellow',
     label: 'Connecting...',
   },
   connected: {
-    dot: 'bg-accent-green',
-    text: 'text-accent-green',
+    dotClass: 'bg-accent-green',
+    textClass: 'text-accent-green',
     label: 'Connected',
   },
   disconnected: {
-    dot: 'bg-accent-red',
-    text: 'text-accent-red',
+    dotClass: 'bg-accent-red',
+    textClass: 'text-accent-red',
     label: 'Disconnected',
   },
 }
@@ -36,8 +36,8 @@ const Badge = ({ variant }: BadgeProps): JSX.Element => {
       data-testid="badge"
       aria-label={`Connection status: ${config.label}`}
     >
-      <span className={`w-2 h-2 rounded-full ${config.dot}`} />
-      <span className={`text-sm font-medium ${config.text}`}>{config.label}</span>
+      <span className={`w-1.5 h-1.5 rounded-full ${config.dotClass}`} />
+      <span className={`text-xs font-mono ${config.textClass}`}>{config.label}</span>
     </div>
   )
 }

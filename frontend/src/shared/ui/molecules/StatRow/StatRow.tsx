@@ -4,14 +4,13 @@ type StatRowProps = {
   readonly valueClassName?: string
 }
 
-const StatRow = ({
-  label,
-  value,
-  valueClassName = 'text-white',
-}: StatRowProps): JSX.Element => (
-  <div className="flex items-center justify-between py-1" data-testid="stat-row">
-    <span className="text-white/40 text-sm">{label}</span>
-    <span className={`text-sm font-mono ${valueClassName}`} data-testid="stat-row-value">
+const StatRow = ({ label, value, valueClassName }: StatRowProps): JSX.Element => (
+  <div className="flex items-center justify-between py-1.5" data-testid="stat-row">
+    <span className="stat-label">{label}</span>
+    <span
+      className={`stat-value ${valueClassName ?? 'text-white'}`}
+      data-testid="stat-row-value"
+    >
       {value ?? 'N/A'}
     </span>
   </div>

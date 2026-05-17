@@ -40,3 +40,7 @@ These rules are enforced by ESLint, CI, and pre-commit hooks. PRs violating any 
 - `.claude/rules/fsd.md` — frontend Feature-Sliced Design rules
 - `.claude/agents/code-reviewer.md` — code review agent
 - `.claude/agents/test-writer.md` — test generation agent
+
+## Design
+
+Before generating or modifying any frontend component, read `STYLE.md` — it is the source of truth for all visual decisions. Never improvise colors or spacing.

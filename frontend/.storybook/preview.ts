@@ -6,11 +6,14 @@ const preview: Preview = {
     backgrounds: {
       default: 'dark',
       values: [
-        { name: 'dark', value: '#0f1117' },
-        { name: 'surface', value: '#1a1d27' },
+        { name: 'dark', value: '#0a0b0f' },
+        { name: 'surface', value: '#111318' },
       ],
     },
     layout: 'centered',
+  },
+  globals: {
+    backgrounds: { value: '#0a0b0f' },
   },
 }
 

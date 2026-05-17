@@ -10,11 +10,11 @@ type DataCardProps = {
 const DataCard = ({ title, children, footer, headerRight }: DataCardProps): JSX.Element => (
   <div className="card flex flex-col gap-4" data-testid="data-card">
     <div className="flex items-center justify-between">
-      <h2 className="text-white/60 text-sm font-medium uppercase tracking-wider">{title}</h2>
+      <span className="section-label">{title}</span>
       {headerRight}
     </div>
 
-    <div className="flex flex-col gap-2">{children}</div>
+    <div className="flex flex-col">{children}</div>
 
     {footer !== undefined && (
       <div className="border-t border-white/5 pt-3">{footer}</div>

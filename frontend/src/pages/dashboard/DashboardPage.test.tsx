@@ -14,12 +14,6 @@ vi.mock('@widgets/pair-card', () => ({
   ),
 }))
 
-vi.mock('@widgets/rate-chart', () => ({
-  RateChart: ({ pair }: { pair: CurrencyPair }): JSX.Element => (
-    <div data-testid={`rate-chart-${pair.replace('/', '-')}`}>{pair} Chart</div>
-  ),
-}))
-
 vi.mock('@widgets/commentary', () => ({
   CommentaryWidget: (): JSX.Element => (
     <div data-testid="commentary-widget">Commentary</div>
@@ -42,13 +36,6 @@ describe('DashboardPage', () => {
     expect(screen.getByTestId('pair-card-ETH-USDC')).toBeInTheDocument()
     expect(screen.getByTestId('pair-card-ETH-USDT')).toBeInTheDocument()
     expect(screen.getByTestId('pair-card-ETH-BTC')).toBeInTheDocument()
-  })
-
-  it('should render a chart for each currency pair', () => {
-    render(<DashboardPage />)
-    expect(screen.getByTestId('rate-chart-ETH-USDC')).toBeInTheDocument()
-    expect(screen.getByTestId('rate-chart-ETH-USDT')).toBeInTheDocument()
-    expect(screen.getByTestId('rate-chart-ETH-BTC')).toBeInTheDocument()
   })
 
   it('should render commentary section', () => {

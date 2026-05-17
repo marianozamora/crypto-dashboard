@@ -4,21 +4,47 @@
 
 @layer base {
   html {
-    @apply bg-surface text-white;
+    @apply bg-surface-deep text-white;
     font-family: 'Inter', system-ui, sans-serif;
   }
 
   * {
     @apply border-white/10;
+    box-sizing: border-box;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-deep;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full;
   }
 }
 
 @layer components {
   .card {
-    @apply bg-surface-card rounded-xl border border-white/5 p-4;
+    @apply bg-surface border border-white/5 rounded-2xl p-5
+           transition-colors duration-200 hover:border-white/10;
   }
 
   .skeleton {
-    @apply animate-pulse bg-white/10 rounded;
+    @apply animate-pulse bg-white/5 rounded;
+  }
+
+  .stat-label {
+    @apply text-white/40 text-xs uppercase tracking-wide font-sans;
+  }
+
+  .stat-value {
+    @apply font-mono text-sm text-white;
+  }
+
+  .section-label {
+    @apply text-white/40 text-xs uppercase tracking-wider font-sans;
   }
 }
