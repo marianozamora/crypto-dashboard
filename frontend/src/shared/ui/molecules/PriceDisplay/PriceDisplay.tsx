@@ -8,7 +8,7 @@ type PriceDisplayProps = {
   readonly size?: 'sm' | 'md' | 'lg'
 }
 
-const PriceDisplay = ({ price, timestamp, symbol, size }: PriceDisplayProps): JSX.Element => (
+const PriceDisplay = ({ price, timestamp, symbol = '$', size = 'lg' }: PriceDisplayProps): JSX.Element => (
   <div className="flex flex-col gap-0.5" data-testid="price-display">
     <PriceTag value={price} symbol={symbol} size={size} />
     <span
