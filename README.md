@@ -7,8 +7,8 @@
 [![Vitest](https://img.shields.io/badge/tested_with-Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Playwright](https://img.shields.io/badge/E2E-Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
 [![Storybook](https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white)](https://storybook.js.org/)
-[![Railway](https://img.shields.io/badge/backend-Railway-0B0D0E?logo=railway&logoColor=white)](https://railway.app/)
-[![Vercel](https://img.shields.io/badge/frontend-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com/)
+[![Railway](https://img.shields.io/badge/backend-Railway-0B0D0E?logo=railway&logoColor=white)](https://splendid-friendship-production-2368.up.railway.app/health)
+[![Vercel](https://img.shields.io/badge/frontend-Vercel-000000?logo=vercel&logoColor=white)](https://cryptostream-frontend.vercel.app/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 Real-time cryptocurrency dashboard streaming live ETH/USDC, ETH/USDT, and ETH/BTC prices from Finnhub, with AI-generated hourly market commentary powered by Claude.
@@ -152,6 +152,15 @@ Or run everything with Docker:
 ```bash
 docker compose up
 ```
+
+## Live
+
+| Service | URL |
+|---|---|
+| Frontend | https://cryptostream-frontend.vercel.app |
+| Storybook | https://cryptostream-storybook.vercel.app |
+| Backend API | https://splendid-friendship-production-2368.up.railway.app |
+| Swagger UI | https://splendid-friendship-production-2368.up.railway.app/api/docs |
 
 ## Local URLs
 

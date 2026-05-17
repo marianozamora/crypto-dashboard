@@ -26,11 +26,12 @@ import { TypeOrmRateRepository } from './infrastructure/outbound/persistence/typ
 import { RatesGateway } from './infrastructure/inbound/websocket/rates.gateway'
 import { FinnhubWsAdapter } from './infrastructure/inbound/finnhub/finnhub-ws.adapter'
 import { HealthController } from './infrastructure/inbound/health/health.controller'
+import { RatesController } from './infrastructure/inbound/http/rates.controller'
 import { PersistHourlyAverageScheduler } from './infrastructure/inbound/schedulers/persist-hourly-average.scheduler'
 
 @Module({
   imports: [TypeOrmModule.forFeature([RateOrmEntity, HourlyAverageOrmEntity])],
-  controllers: [HealthController],
+  controllers: [HealthController, RatesController],
   providers: [
     AppLoggerService,
     TypeOrmRateRepository,
