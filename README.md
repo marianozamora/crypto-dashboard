@@ -60,6 +60,30 @@ Finnhub WebSocket
 | Testing | Vitest · React Testing Library · Playwright |
 | Visual | Storybook |
 
+## Architectural Decisions
+
+### Real-time data flow
+Finnhub sends trade ticks over WebSocket. The backend processes each tick through a use case pipeline: validate the symbol → extract price → publish to all connected Socket.IO clients → persist hourly aggregates to PostgreSQL. Clients never poll; they receive every tick pushed server-side.
+
+Prices are held in a shared in-memory buffer (up to 3,600 ticks per pair) for chart history without a database round-trip on every read. PostgreSQL stores only hourly averages — the data that needs to survive restarts.
+
+### Reconnection strategy
+Both the Finnhub adapter (backend) and the Socket.IO client (frontend) use exponential backoff: `[1s, 2s, 4s, 8s, 16s, 30s]`. After a manual disconnect the backoff resets. Handlers are preserved across reconnects so no event subscriptions are lost.
+
+### Hexagonal architecture (backend)
+The domain layer has zero framework dependencies — no NestJS, no TypeORM. Use cases depend only on port types (TypeScript `type` aliases). Infrastructure adapters implement those ports and are injected via DI tokens. This makes business logic independently testable without starting the full NestJS container.
+
+### Feature-Sliced Design (frontend)
+Import direction is enforced: `app → pages → widgets → features → entities → shared`. Widgets are the only layer connected to Zustand; organisms and below are pure presentational components that receive props and know nothing about global state. This makes the component library fully testable in Storybook without any store setup.
+
+### Schema management
+In development (`NODE_ENV !== production`) TypeORM auto-syncs the schema for fast iteration. Production deployments use TypeORM migrations (see `backend/src/migrations/`), which are versioned and reversible. The `migration:generate` script diffs the current entity definitions against the database and produces a migration automatically.
+
+### AI commentary
+An `@Cron` job runs every hour, fetches the last hour of rate data, and calls Claude via the Anthropic SDK. The generated commentary is broadcast to all connected clients via the `commentary_update` Socket.IO event. If the AI call fails, the frontend stays in its loading state — it never shows stale or errored commentary.
+
+---
+
 ## Local Setup
 
 **Prerequisites:** Node.js 20+, Docker (for PostgreSQL)
@@ -77,10 +101,20 @@ cp backend/.env.example backend/.env
 
 Edit `backend/.env` with your API keys:
 
+**Getting a Finnhub API key (free tier, takes ~2 minutes):**
+1. Go to [finnhub.io/register](https://finnhub.io/register) and create a free account
+2. After login, your API key is shown on the dashboard home page
+3. The free tier supports up to 60 API calls/minute — sufficient for this dashboard
+
+**Getting an Anthropic API key:**
+1. Go to [console.anthropic.com](https://console.anthropic.com) and create an account
+2. Navigate to API Keys and create a new key
+3. The AI commentary feature is optional — the dashboard works without it (commentary section stays in loading state)
+
 | Variable | Description |
 |---|---|
-| `FINNHUB_API_KEY` | Finnhub WebSocket API key — [finnhub.io](https://finnhub.io) |
-| `ANTHROPIC_API_KEY` | Claude API key — [console.anthropic.com](https://console.anthropic.com) |
+| `FINNHUB_API_KEY` | Finnhub WebSocket API key (required) |
+| `ANTHROPIC_API_KEY` | Claude API key (optional — commentary disabled if absent) |
 | `DATABASE_URL` | PostgreSQL connection string (default works with Docker) |
 | `PORT` | Backend port (default: `3001`) |
 | `FRONTEND_URL` | CORS origin (default: `http://localhost:3000`) |

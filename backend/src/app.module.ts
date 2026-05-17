@@ -21,7 +21,7 @@ import { AiModule } from './ai/ai.module'
         type: 'postgres' as const,
         url: configService.get('DATABASE_URL', { infer: true }),
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: configService.get('NODE_ENV', { infer: true }) !== 'production',
       }),
     }),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
