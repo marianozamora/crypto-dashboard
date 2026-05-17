@@ -1,5 +1,16 @@
 # cryptostream
 
+[![CI](https://github.com/marianozamora/crypto-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/marianozamora/crypto-dashboard/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Vitest](https://img.shields.io/badge/tested_with-Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Playwright](https://img.shields.io/badge/E2E-Playwright-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Storybook](https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white)](https://storybook.js.org/)
+[![Railway](https://img.shields.io/badge/backend-Railway-0B0D0E?logo=railway&logoColor=white)](https://railway.app/)
+[![Vercel](https://img.shields.io/badge/frontend-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 Real-time cryptocurrency dashboard streaming live ETH/USDC, ETH/USDT, and ETH/BTC prices from Finnhub, with AI-generated hourly market commentary powered by Claude.
 
 ![cryptostream dashboard](docs/screenshot.png)
