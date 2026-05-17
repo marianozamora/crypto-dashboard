@@ -8,7 +8,7 @@ import type { CurrencyPairValue } from '@domain/value-objects/currency-pair.vo'
 import type { RateStreamPort } from '@domain/ports/outbound/rate-stream.port'
 import { AppLoggerService } from '@logger/app-logger.service'
 
-@WebSocketGateway({ cors: { origin: '*' } })
+@WebSocketGateway({ cors: { origin: process.env['FRONTEND_URL'] ?? 'http://localhost:5173' } })
 @Injectable()
 export class RatesGateway implements RateStreamPort, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
