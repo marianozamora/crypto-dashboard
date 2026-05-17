@@ -9,7 +9,14 @@ import { AppLoggerService } from '@logger/app-logger.service'
 import { PROCESS_RATE_TICK_USE_CASE } from '@application/use-cases/process-rate-tick.use-case'
 import type { ProcessRateTickUseCase } from '@application/use-cases/process-rate-tick.use-case'
 import type { Env } from '@config/env.validation'
-import { FINNHUB_WS_URL, FINNHUB_SYMBOL_MAP, RECONNECT_DELAYS_MS } from './finnhub.config'
+import {
+  FINNHUB_WS_URL,
+  FINNHUB_SYMBOL_MAP,
+  RECONNECT_DELAYS_MS,
+  FINNHUB_MESSAGE_TYPE_TRADE,
+  FINNHUB_ACTION_SUBSCRIBE,
+  FINNHUB_ACTION_UNSUBSCRIBE,
+} from './finnhub.config'
 
 type FinnhubTrade = {
   readonly p: number
@@ -83,7 +90,7 @@ export class FinnhubWsAdapter implements OnModuleInit, OnApplicationShutdown {
     try {
       const raw = event.data.toString()
       const parsed: unknown = JSON.parse(raw)
-      if (!isFinnhubMessage(parsed) || parsed.type !== 'trade' || !parsed.data) return
+      if (!isFinnhubMessage(parsed) || parsed.type !== FINNHUB_MESSAGE_TYPE_TRADE || !parsed.data) return
       for (const trade of parsed.data) {
         this.handleTick(trade)
       }
@@ -124,13 +131,13 @@ export class FinnhubWsAdapter implements OnModuleInit, OnApplicationShutdown {
 
   private subscribeAll(): void {
     for (const pair of VALID_PAIRS) {
-      this.ws?.send(JSON.stringify({ type: 'subscribe', symbol: FINNHUB_SYMBOL_MAP[pair] }))
+      this.ws?.send(JSON.stringify({ type: FINNHUB_ACTION_SUBSCRIBE, symbol: FINNHUB_SYMBOL_MAP[pair] }))
     }
   }
 
   private unsubscribeAll(): void {
     for (const pair of VALID_PAIRS) {
-      this.ws?.send(JSON.stringify({ type: 'unsubscribe', symbol: FINNHUB_SYMBOL_MAP[pair] }))
+      this.ws?.send(JSON.stringify({ type: FINNHUB_ACTION_UNSUBSCRIBE, symbol: FINNHUB_SYMBOL_MAP[pair] }))
     }
   }
 }

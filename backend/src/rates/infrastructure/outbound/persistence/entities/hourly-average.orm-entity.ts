@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm'
 
+const PRICE_COLUMN = { precision: 18, scale: 8 } as const
+
 @Entity('hourly_averages')
 export class HourlyAverageOrmEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -8,7 +10,7 @@ export class HourlyAverageOrmEntity {
   @Column()
   pair!: string
 
-  @Column('decimal', { precision: 18, scale: 8 })
+  @Column('decimal', PRICE_COLUMN)
   average!: number
 
   @Column()

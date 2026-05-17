@@ -5,8 +5,7 @@ import {
 } from '@application/use-cases/persist-hourly-average.use-case'
 import type { PersistHourlyAverageUseCase } from '@application/use-cases/persist-hourly-average.use-case'
 import { AppLoggerService } from '@logger/app-logger.service'
-
-const HOURLY_CRON = '0 * * * *'
+import { HOURLY_CRON } from '@shared/config/constants'
 
 @Injectable()
 export class PersistHourlyAverageScheduler {

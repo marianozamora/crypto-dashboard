@@ -6,8 +6,7 @@ import {
 import type { GenerateCommentaryUseCase } from '@ai/application/use-cases/generate-commentary.use-case'
 import { RatesGateway } from '@rates/infrastructure/inbound/websocket/rates.gateway'
 import { AppLoggerService } from '@logger/app-logger.service'
-
-const HOURLY_CRON = '0 * * * *'
+import { HOURLY_CRON } from '@shared/config/constants'
 
 @Injectable()
 export class CommentaryScheduler {

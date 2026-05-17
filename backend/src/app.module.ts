@@ -5,6 +5,7 @@ import { ThrottlerModule } from '@nestjs/throttler'
 import { ScheduleModule } from '@nestjs/schedule'
 import { validateEnv } from './shared/config/env.validation'
 import type { Env } from './shared/config/env.validation'
+import { RATE_LIMIT_TTL_MS, RATE_LIMIT_MAX_REQUESTS } from './shared/config/constants'
 import { RatesModule } from './rates/rates.module'
 import { AiModule } from './ai/ai.module'
 
@@ -24,7 +25,7 @@ import { AiModule } from './ai/ai.module'
         synchronize: configService.get('NODE_ENV', { infer: true }) !== 'production',
       }),
     }),
-    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
+    ThrottlerModule.forRoot([{ ttl: RATE_LIMIT_TTL_MS, limit: RATE_LIMIT_MAX_REQUESTS }]),
     ScheduleModule.forRoot(),
     RatesModule,
     AiModule,
