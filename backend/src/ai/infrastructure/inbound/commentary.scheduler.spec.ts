@@ -28,7 +28,9 @@ const createMockLogger = (): MockLogger => ({
 })
 
 const createMockConfig = (apiKey: string | undefined): MockConfig => ({
-  get: vi.fn().mockReturnValue(apiKey),
+  get: vi.fn().mockImplementation((key: string) =>
+    key === 'ANTHROPIC_API_KEY' ? apiKey : undefined
+  ),
 })
 
 describe('CommentaryScheduler', () => {
