@@ -11,7 +11,6 @@ type MockLogger = { [K in keyof AppLoggerService]: ReturnType<typeof vi.fn> }
 
 const createMockStream = (): MockRateStream => ({
   emit: vi.fn(),
-  getConnectedClientCount: vi.fn().mockReturnValue(0),
 })
 
 const createMockLogger = (): MockLogger => ({
