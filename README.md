@@ -110,7 +110,11 @@ cp .env.example .env
 cp backend/.env.example backend/.env
 ```
 
-Edit `backend/.env` with your API keys:
+Edit `backend/.env` with your API keys. You can use this key to run the project locally without signing up:
+
+```env
+FINNHUB_API_KEY=d83thj1r01qkm5c9gl9gd83thj1r01qkm5c9gla0
+```
 
 **Getting a Finnhub API key (free tier, takes ~2 minutes):**
 1. Go to [finnhub.io/register](https://finnhub.io/register) and create a free account
