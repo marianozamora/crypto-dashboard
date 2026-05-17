@@ -10,33 +10,16 @@ import { StatRow } from '@molecules/StatRow'
 import { ChartTooltip } from '@molecules/ChartTooltip'
 import { useRates } from '@features/rates/hooks/useRates'
 import {
-  PAIR_LABELS, PAIR_CURRENCY_SYMBOLS, MAX_CHART_TICKS,
+  PAIR_LABELS, PAIR_CURRENCY_SYMBOLS,
   CHART_LINE_COLOR, CHART_LINE_STROKE_WIDTH,
   CHART_GRID_COLOR, CHART_AXIS_COLOR, CHART_AXIS_FONT_SIZE, CHART_Y_AXIS_WIDTH,
 } from '@config/constants'
-import { formatPrice, formatPercent, formatChartTime } from '@lib/utils/format'
+import { formatPrice, formatPercent } from '@lib/utils/format'
+import { buildDataPoint, appendTick } from '@lib/chart/chart-data'
+import type { ChartDataPoint } from '@lib/chart/chart-data'
 
 type PairCardProps = {
   readonly pair: CurrencyPair
-}
-
-type ChartDataPoint = {
-  readonly timestamp: number
-  readonly price: number
-  readonly time: string
-}
-
-const buildDataPoint = (rate: RateUpdate): ChartDataPoint => {
-  const ts = new Date(rate.timestamp).getTime()
-  return { timestamp: ts, price: rate.price, time: formatChartTime(ts) }
-}
-
-const appendTick = (
-  prev: readonly ChartDataPoint[],
-  next: ChartDataPoint,
-): readonly ChartDataPoint[] => {
-  const updated = [...prev, next]
-  return updated.length > MAX_CHART_TICKS ? updated.slice(-MAX_CHART_TICKS) : updated
 }
 
 const buildHourlyAverageLabel = (pair: CurrencyPair, avg: number | null): string | null => {
