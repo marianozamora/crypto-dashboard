@@ -2,11 +2,14 @@ import { CommentaryScheduler } from './commentary.scheduler'
 import type { GenerateCommentaryUseCase } from '@ai/application/use-cases/generate-commentary.use-case'
 import type { RatesGateway } from '@rates/infrastructure/inbound/websocket/rates.gateway'
 import type { AppLoggerService } from '@logger/app-logger.service'
+import type { ConfigService } from '@nestjs/config'
 import type { MarketCommentary } from '@crypto/shared'
+import type { Env } from '@config/env.validation'
 
 type MockLogger = { [K in keyof AppLoggerService]: ReturnType<typeof vi.fn> }
 type MockUseCase = { execute: ReturnType<typeof vi.fn> }
 type MockGateway = { emitCommentary: ReturnType<typeof vi.fn> }
+type MockConfig = Pick<ConfigService<Env, true>, 'get'>
 
 const MOCK_COMMENTARY: MarketCommentary = {
   text: 'ETH markets are bullish.',
@@ -24,6 +27,10 @@ const createMockLogger = (): MockLogger => ({
   logError: vi.fn(),
 })
 
+const createMockConfig = (apiKey: string | undefined): MockConfig => ({
+  get: vi.fn().mockReturnValue(apiKey),
+})
+
 describe('CommentaryScheduler', () => {
   let scheduler: CommentaryScheduler
   let mockUseCase: MockUseCase
@@ -38,6 +45,7 @@ describe('CommentaryScheduler', () => {
       mockUseCase as unknown as GenerateCommentaryUseCase,
       mockGateway as unknown as RatesGateway,
       mockLogger as unknown as AppLoggerService,
+      createMockConfig('test-api-key') as unknown as ConfigService<Env, true>,
     )
   })
 
@@ -53,5 +61,18 @@ describe('CommentaryScheduler', () => {
     await expect(scheduler.runHourly()).resolves.toBeUndefined()
     expect(mockLogger.logError).toHaveBeenCalledWith('commentary_scheduler_failed', error)
     expect(mockGateway.emitCommentary).not.toHaveBeenCalled()
+  })
+
+  it('should skip silently when ANTHROPIC_API_KEY is not configured', async () => {
+    const schedulerWithoutKey = new CommentaryScheduler(
+      mockUseCase as unknown as GenerateCommentaryUseCase,
+      mockGateway as unknown as RatesGateway,
+      mockLogger as unknown as AppLoggerService,
+      createMockConfig(undefined) as unknown as ConfigService<Env, true>,
+    )
+    await schedulerWithoutKey.runHourly()
+    expect(mockUseCase.execute).not.toHaveBeenCalled()
+    expect(mockGateway.emitCommentary).not.toHaveBeenCalled()
+    expect(mockLogger.logError).not.toHaveBeenCalled()
   })
 })

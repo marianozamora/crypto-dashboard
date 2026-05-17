@@ -8,15 +8,15 @@ import { CLAUDE_MODEL, CLAUDE_MAX_TOKENS, COMMENTARY_SYSTEM_PROMPT } from './cla
 
 @Injectable()
 export class ClaudeCommentaryAdapter implements AiCommentaryPort {
-  private readonly client: Anthropic
+  private readonly client: Anthropic | null
 
   constructor(configService: ConfigService<Env, true>) {
-    this.client = new Anthropic({
-      apiKey: configService.get('ANTHROPIC_API_KEY', { infer: true }),
-    })
+    const apiKey = configService.get('ANTHROPIC_API_KEY', { infer: true })
+    this.client = apiKey !== undefined ? new Anthropic({ apiKey }) : null
   }
 
   async generateCommentary(input: CommentaryInput): Promise<MarketCommentary> {
+    if (this.client === null) throw new Error('ANTHROPIC_API_KEY is not configured')
     const response = await this.client.messages.create({
       model: CLAUDE_MODEL,
       max_tokens: CLAUDE_MAX_TOKENS,

@@ -3,7 +3,7 @@ import { z } from 'zod'
 const envSchema = z.object({
   FINNHUB_API_KEY: z.string().min(1),
   DATABASE_URL: z.string().url(),
-  ANTHROPIC_API_KEY: z.string().min(1),
+  ANTHROPIC_API_KEY: z.string().min(1).optional(),
   PORT: z.coerce.number().default(3001),
   NODE_ENV: z.enum(['development', 'production', 'test']),
   FRONTEND_URL: z.string().url().default('http://localhost:5173'),
