@@ -1,16 +1,14 @@
 import { test, expect } from '@playwright/test'
-import { waitForRates, waitForCharts } from './helpers/wait'
+import { waitForRatesAndCharts } from './helpers/wait'
 
 const CHART_VISIBLE_TIMEOUT_MS = 10_000
 
 const PAIRS = ['ETH-USDC', 'ETH-USDT', 'ETH-BTC'] as const
 
-
 test.describe('RateChart real data rendering', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
-    await waitForRates(page)
-    await waitForCharts(page)
+    await waitForRatesAndCharts(page)
   })
 
   test('should transition all charts from loading spinner to chart container', async ({ page }) => {
